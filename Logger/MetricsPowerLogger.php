@@ -25,8 +25,8 @@ use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 #[AsService]
 class MetricsPowerLogger implements MetricsPowerLoggerInterface
 {
-    private const MESSAGE_INFO = '{option_class} Metrics registration success for {message_class}';
-    private const MESSAGE_ERROR = '{option_class} Metrics registration failed for {message_class}, reason: {reason_message}, options: {option_values}';
+    private const MESSAGE_INFO = '[MetricsPower] [INFO] [OPTIONS_CLASS: {option_class}] Metrics registration success for [MESSAGE_CLASS: {message_class}]';
+    private const MESSAGE_ERROR = '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}], [REASON: {reason_message}], [OPTIONS_VALUES: {option_values}]';
 
     public function __construct(
         private readonly LoggerInterface $metricsPowerLogger

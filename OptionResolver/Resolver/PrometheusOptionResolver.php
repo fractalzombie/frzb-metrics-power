@@ -25,6 +25,10 @@ use Prometheus\RegistryInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
+use Symfony\Component\Messenger\Event\WorkerMessageRetriedEvent;
 
 #[AsService, AsTagged(OptionResolverInterface::class)]
 class PrometheusOptionResolver implements OptionResolverInterface
@@ -38,9 +42,17 @@ class PrometheusOptionResolver implements OptionResolverInterface
     /** @throws MetricsRegistrationException */
     public function __invoke(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, PrometheusOptions $options): void
     {
+        $postfix = match ($event::class) {
+            WorkerMessageFailedEvent::class => 'failed',
+            WorkerMessageHandledEvent::class => 'handled',
+            WorkerMessageReceivedEvent::class => 'received',
+            WorkerMessageRetriedEvent::class => 'retried',
+            SendMessageToTransportsEvent::class => 'sent',
+        };
+
         try {
             $this->registry
-                ->getOrRegisterCounter($this->namespace, CounterHelper::makeName($options), $options->help, $options->labels)
+                ->getOrRegisterCounter($this->namespace, CounterHelper::makeName($options, postfix: $postfix), $options->help, $options->labels)
                 ->inc($options->values)
             ;
         } catch (BaseMetricsRegistrationException $e) {
