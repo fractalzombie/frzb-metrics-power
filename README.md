@@ -25,7 +25,8 @@ Example
 ```php
 <?php
 
-use FRZB\Component\MetricsPower\Attribute\Metrical;use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
+use FRZB\Component\MetricsPower\Attribute\Metrical;
+use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
 
 #[Metrical(
     new PrometheusOptions(
