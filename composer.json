@@ -1,0 +1,58 @@
+{
+    "name": "frzb/metrics-power",
+    "type": "library",
+    "description": "The MetricsPower component allows make your application able to metric",
+    "keywords": [
+        "library",
+        "symfony",
+        "component",
+        "messenger",
+        "http",
+        "metrics",
+        "power",
+        "frzb"
+    ],
+    "homepage": "https://github.com/fractalzombie/frzb-metrics-power",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mykhailo Shtanko",
+            "email": "fractalzombie@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "fp4php/functional": "^6.0",
+        "promphp/prometheus_client_php": "^v2.10",
+        "symfony/http-kernel": "^6|^7",
+        "symfony/framework-bundle": "^6|^7",
+        "symfony/event-dispatcher": "^6|^7",
+        "frzb/dependency-injection": "^2.1",
+        "symfony/yaml": "^6|^7",
+        "symfony/messenger": "^6|^7",
+        "sentry/sdk": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "symfony/phpunit-bridge": "^6|^7",
+        "friendsofphp/php-cs-fixer": "^v3.52"
+    },
+    "autoload": {
+        "psr-4": {
+            "FRZB\\Component\\MetricsPower\\": ""
+        },
+        "exclude-from-classmap": [
+            "/lib/metrics-power/Tests/"
+        ]
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "5.4.*||6.0.*||6.1.*||6.2.*"
+        },
+        "src-dir": "./",
+        "config-dir": "Resources/"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

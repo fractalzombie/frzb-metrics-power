@@ -1,0 +1,29 @@
+{
+    "bundles": {
+        "FRZB\\Component\\DependencyInjection\\DependencyInjectionBundle": ["all"],
+        "FRZB\\Component\\MetricsPower\\MetricsPowerBundle": ["all"]
+    },
+    "copy-from-package": {
+        "bin/check.php": "%BIN_DIR%/check.php"
+    },
+    "copy-from-recipe": {
+        "Resources/config/": "%CONFIG_DIR%/",
+        "src/": "%SRC_DIR%/"
+    },
+    "env": {
+        "SENTRY_DSN": "dev",
+        "SENTRY_ENVIRONMENT": "dev",
+        "SENTRY_TRACES_SAMPLE_RATE": 1.0,
+        "SENTRY_PROFILE_SAMPLE_RATE": 1.0,
+        "PROMETHEUS_NAMESPACE": "your-app-name",
+        "PROMETHEUS_REDIS_HOST": "redis",
+        "PROMETHEUS_REDIS_PORT": 6379,
+        "PROMETHEUS_REDIS_DATABASE": 0,
+        "PROMETHEUS_REDIS_TIMEOUT": 0.1,
+        "PROMETHEUS_REDIS_READ_TIMEOUT": 10,
+        "PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS": false,
+        "PROMETHEUS_REDIS_PASSWORD": "secret",
+        "PROMETHEUS_REDIS_URL": "redis://${PROMETHEUS_REDIS_PASSWORD}@${PROMETHEUS_REDIS_HOST}"
+
+    }
+}

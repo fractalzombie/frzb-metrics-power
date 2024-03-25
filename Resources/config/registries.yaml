@@ -1,0 +1,4 @@
+services:
+  Prometheus\RegistryInterface: ~ # configured in CollectorRegistryPass compiler pass
+  Prometheus\CollectorRegistry: ~ # configured in CollectorRegistryPass compiler pass
+  Prometheus\Storage\Adapter: ~ # configured in CollectorRegistryPass compiler pass

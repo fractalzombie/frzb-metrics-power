@@ -1,0 +1,18 @@
+imports:
+  - { resource: registries.yaml }
+
+services: &services
+  _defaults: &defaults
+    autowire: true
+    autoconfigure: true
+  
+  FRZB\Component\MetricsPower\:
+    resource: '../../{Action,EventListener,Handler,TypeExtractor,Logger,OptionResolver}/**'
+    exclude: '../../{Attribute,Configuration,DependencyInjection,Enum,Exception,Helper,Tests,Traits}/**'
+
+when@test:
+  services:
+    <<: *services
+    _defaults:
+      <<: *defaults
+      public: true

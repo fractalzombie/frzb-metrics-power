@@ -1,0 +1,25 @@
+#!/bin/bash
+
+SLEEP_TIME_BEFORE_RECONNECT=5
+enabled=false
+
+while getopts c:s:p:e flag
+do
+    case "${flag}" in
+        c) command=${OPTARG};;
+        s) service=${OPTARG};;
+        p) port=${OPTARG};;
+        e) enabled=true;;
+        *) exit 0;
+    esac
+done
+
+if $enabled; then
+  until timeout 1 bash -c "cat < /dev/null > /dev/tcp/$service/$port" >/dev/null 2>&1; do
+      echo "$(date) - Trying connect to $service:$port"
+      sleep $SLEEP_TIME_BEFORE_RECONNECT
+  done
+  echo "$(date) - Connection to $service:$port established"
+fi
+
+php bin/console "$command"

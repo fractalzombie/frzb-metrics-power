@@ -1,0 +1,14 @@
+metrics_power:
+  sentry:
+    dsn: '%env(resolve:SENTRY_DSN)%'
+    environment: '%env(resolve:SENTRY_ENVIRONMENT)%'
+  prometheus:
+    storage: 'in_memory'
+    redis:
+      host: '%env(string:PROMETHEUS_REDIS_HOST)%'
+      port: '%env(int:PROMETHEUS_REDIS_PORT)%'
+      database: '%env(int:PROMETHEUS_REDIS_DATABASE)%'
+      timeout: '%env(float:PROMETHEUS_REDIS_TIMEOUT)%'
+      read_timeout: '%env(float:PROMETHEUS_REDIS_READ_TIMEOUT)%'
+      persistent_connections: '%env(bool:PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS)%'
+      password: '%env(string:PROMETHEUS_REDIS_PASSWORD)%'
