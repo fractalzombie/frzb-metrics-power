@@ -32,8 +32,7 @@ final class StorageAdapterPass implements CompilerPassInterface
             ->getDefinition(Adapter::class)
             ->setFactory([PrometheusStorageAdapterFactory::class, 'createStorageAdapter'])
             ->setArgument('$configuration', self::getConfiguration($container))
-            ->setPublic($isPublic)
-        ;
+            ->setPublic($isPublic);
     }
 
     private static function getConfiguration(ContainerBuilder $container): array

@@ -32,13 +32,11 @@ final class CollectorRegistryPass implements CompilerPassInterface
         $container
             ->getDefinition(CollectorRegistry::class)
             ->setPublic($isPublic)
-            ->setArgument('$storageAdapter', $container->getDefinition(Adapter::class))
-        ;
+            ->setArgument('$storageAdapter', $container->getDefinition(Adapter::class));
 
         $container
             ->setDefinition(RegistryInterface::class, $container->getDefinition(CollectorRegistry::class))
-            ->setPublic($isPublic)
-        ;
+            ->setPublic($isPublic);
     }
 
     private static function getConfiguration(ContainerBuilder $container): array

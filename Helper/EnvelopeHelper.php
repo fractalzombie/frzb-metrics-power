@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Helper;
 
-use FRZB\Component\MetricsPower\Traits\WithEmptyPrivateConstructor;
+use FRZB\Component\MetricsPower\Traits\WithPrivateEmptyConstructor;
 use JetBrains\PhpStorm\Immutable;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
@@ -24,7 +24,8 @@ use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 #[Immutable]
 final class EnvelopeHelper
 {
-    use WithEmptyPrivateConstructor;
+    use WithPrivateEmptyConstructor;
+
     public static function wrap(object $message): Envelope
     {
         $envelope = Envelope::wrap($message);

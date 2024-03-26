@@ -17,14 +17,17 @@ namespace FRZB\Component\MetricsPower\Traits;
 
 use Fp\Collections\ArrayList;
 
-/** @mixin \BackedEnum */
+/**
+ * @mixin \BackedEnum
+ *
+ * @internal
+ */
 trait WithEnumValues
 {
     public static function values(): array
     {
         return ArrayList::collect(self::cases())
             ->map(fn (self $st) => $st->value)
-            ->toList()
-        ;
+            ->toList();
     }
 }

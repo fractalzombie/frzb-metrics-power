@@ -15,14 +15,14 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Helper;
 
-use FRZB\Component\MetricsPower\Traits\WithEmptyPrivateConstructor;
+use FRZB\Component\MetricsPower\Traits\WithPrivateEmptyConstructor;
 use JetBrains\PhpStorm\Immutable;
 
 /** @internal */
 #[Immutable]
 final class ClassHelper
 {
-    use WithEmptyPrivateConstructor;
+    use WithPrivateEmptyConstructor;
 
     final public const DEFAULT_SHORT_NAME = 'InvalidClassName';
 

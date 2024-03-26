@@ -17,14 +17,14 @@ namespace FRZB\Component\MetricsPower\Helper;
 
 use Fp\Collections\ArrayList;
 use Fp\Functional\Option\Option;
-use FRZB\Component\MetricsPower\Traits\WithEmptyPrivateConstructor;
+use FRZB\Component\MetricsPower\Traits\WithPrivateEmptyConstructor;
 use JetBrains\PhpStorm\Immutable;
 
 /** @internal */
 #[Immutable]
 final class AttributeHelper
 {
-    use WithEmptyPrivateConstructor;
+    use WithPrivateEmptyConstructor;
 
     public static function hasAttribute(object|string $target, string $attributeClass): bool
     {
@@ -42,8 +42,7 @@ final class AttributeHelper
     {
         return ArrayList::collect(self::getAttributes($target, $attributeClass))
             ->firstElement()
-            ->get()
-        ;
+            ->get();
     }
 
     /**
@@ -57,8 +56,7 @@ final class AttributeHelper
     {
         return ArrayList::collect(self::getReflectionAttributes($target, $attributeClass))
             ->map(static fn (\ReflectionAttribute $a) => $a->newInstance())
-            ->toList()
-        ;
+            ->toList();
     }
 
     /**
@@ -76,7 +74,6 @@ final class AttributeHelper
                     ->map(static fn (\ReflectionClass $rClass) => [...ClassHelper::getReflectionAttributes($rClass, $attributeClass), ...self::getReflectionAttributes($rClass, $attributeClass)])
                     ->getOrElse(ClassHelper::getReflectionAttributes($rClass, $attributeClass))
             )
-            ->getOrElse([])
-        ;
+            ->getOrElse([]);
     }
 }

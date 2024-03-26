@@ -69,6 +69,7 @@ RUN chmod a+x /usr/local/bin/start-consumer && \
 # Configure PHP
 COPY conf/docker-php-ext-xdebug.ini ${PHP_INI_DIR}/conf.d/docker-php-ext-xdebug.ini
 COPY conf/docker-php-ext-opcache.ini ${PHP_INI_DIR}/conf.d/docker-php-ext-opcache.ini
+COPY conf/docker-php-ext-opcache.ini ${PHP_INI_DIR}/conf.d/docker-php-ext-apcu.ini
 COPY conf/php.production.ini ${PHP_INI_DIR}/php.ini
 
 RUN apk add --no-cache sudo && \

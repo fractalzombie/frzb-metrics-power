@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="Tests/Pest.php"
          colors="true"
          failOnRisky="true"
          failOnWarning="true"
@@ -17,25 +17,46 @@
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.5"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
         <env name="TEST_ENVIRONMENT" value="TEST_VALUE"/>
+        <env name="SENTRY_DSN" value="https://KEY@INSTANCE.ingest.us.sentry.io/NAMESPACE"/>
+        <env name="SENTRY_ENVIRONMENT" value="test"/>
+        <env name="SENTRY_TRACES_SAMPLE_RATE" value="0"/>
+        <env name="SENTRY_PROFILE_SAMPLE_RATE" value="0"/>
+        <env name="PROMETHEUS_NAMESPACE" value="test_unblocker"/>
+        <env name="PROMETHEUS_STORAGE" value="in-memory"/>
+        <env name="PROMETHEUS_REDIS_HOST" value="redis"/>
+        <env name="PROMETHEUS_REDIS_PORT" value="6379"/>
+        <env name="PROMETHEUS_REDIS_DATABASE" value="0"/>
+        <env name="PROMETHEUS_REDIS_TIMEOUT" value="10"/>
+        <env name="PROMETHEUS_REDIS_READ_TIMEOUT" value="10"/>
+        <env name="PROMETHEUS_REDIS_PERSISTENT_CONNECTIONS" value="false"/>
+        <env name="PROMETHEUS_REDIS_PASSWORD" value="secret"/>
+        <env name="PROMETHEUS_REDIS_URL" value="redis://redis"/>
     </php>
+
     <testsuites>
-        <testsuite name="Transactional MessageBus Component Unit Test Suite">
-            <directory>./Tests/Unit/</directory>
+        <testsuite name="Test Suite">
+            <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
-    <coverage>
+
+    <source>
         <include>
-            <directory suffix=".php">./</directory>
+            <directory  suffix=".php">./</directory>
         </include>
         <exclude>
-            <directory>./Tests</directory>
-            <directory>./Resources</directory>
-            <directory>./vendor</directory>
-            <directory>./var</directory>
-            <file>./.php-cs-fixer.dist.php</file>
-            <file>./TransactionalMessengerBundle.php</file>
-            <file>./TransactionalMessengerExtension.php</file>
+            <directory suffix=".php">docker</directory>
+            <directory suffix=".php">var</directory>
+            <directory suffix=".php">vendor</directory>
+            <directory suffix=".php">Resources</directory>
+            <directory suffix=".php">Tests</directory>
+            <directory suffix=".php">DependencyInjection</directory>
+            <file>.php-cs-fixer.dist.php</file>
+            <file>MetricsPowerBundle.php</file>
+            <file>MetricsPowerExtension.php</file>
         </exclude>
+    </source>
+
+    <coverage>
         <report>
             <clover outputFile="build/logs/clover.xml" />
             <cobertura outputFile="build/logs/cobertura.xml"/>
@@ -43,7 +64,4 @@
             <xml outputDirectory="build/logs/xml"/>
         </report>
     </coverage>
-    <logging>
-        <junit outputFile="build/logs/junit.xml"/>
-    </logging>
 </phpunit>

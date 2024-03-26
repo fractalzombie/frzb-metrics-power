@@ -19,14 +19,14 @@ use Fp\Collections\ArrayList;
 use FRZB\Component\MetricsPower\Attribute\Metrical;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface as Option;
 use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
-use FRZB\Component\MetricsPower\Traits\WithEmptyPrivateConstructor;
+use FRZB\Component\MetricsPower\Traits\WithPrivateEmptyConstructor;
 use JetBrains\PhpStorm\Immutable;
 
 /** @internal */
 #[Immutable]
 final class MetricalHelper
 {
-    use WithEmptyPrivateConstructor;
+    use WithPrivateEmptyConstructor;
 
     public static function isMetrical(object|string $target): bool
     {
@@ -38,14 +38,20 @@ final class MetricalHelper
         return AttributeHelper::getAttributes($target, Metrical::class);
     }
 
+    public static function getFirstMetrical(object|string $target): ?Metrical
+    {
+        return ArrayList::collect(self::getMetrical($target))
+            ->firstElement()
+            ->get();
+    }
+
     /** @return array<Option> */
     public static function getOptions(object|string $target): array
     {
         return ArrayList::collect(self::getMetrical($target))
             ->map(static fn (Metrical $metrical) => $metrical->options)
             ->flatten()
-            ->toList()
-        ;
+            ->toList();
     }
 
     public static function getCounterName(PrometheusOptions $options): string

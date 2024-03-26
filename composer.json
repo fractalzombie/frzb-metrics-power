@@ -33,26 +33,33 @@
         "sentry/sdk": "^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^11.0",
+        "phpunit/phpunit": "^10.5",
         "symfony/phpunit-bridge": "^6|^7",
-        "friendsofphp/php-cs-fixer": "^v3.52"
+        "friendsofphp/php-cs-fixer": "^v3.52",
+        "pestphp/pest": "^2.34",
+        "mockery/mockery": "^1.6"
     },
     "autoload": {
         "psr-4": {
             "FRZB\\Component\\MetricsPower\\": ""
-        },
-        "exclude-from-classmap": [
-            "/lib/metrics-power/Tests/"
-        ]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FRZB\\Component\\MetricsPower\\Tests\\": "Tests/"
+        }
     },
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.4.*||6.0.*||6.1.*||6.2.*"
-        },
-        "src-dir": "./",
-        "config-dir": "Resources/"
+            "require": "^6.0||^7.0"
+        }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
 }

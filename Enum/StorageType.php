@@ -22,13 +22,13 @@ enum StorageType: string
     use WithEnumValues;
 
     case Apc = 'apc';
-    case ApcNg = 'apc_ng';
+    case ApcNg = 'apc-ng';
     case Redis = 'redis';
-    case RedisNg = 'redis_ng';
-    case InMemory = 'in_memory';
+    case RedisNg = 'redis-ng';
+    case InMemory = 'in-memory';
     public const APC = 'apc';
     public const APC_NG = 'apc_ng';
     public const REDIS = 'redis';
     public const REDIS_NG = 'redis_ng';
-    public const IN_MEMORY = 'in_memory';
+    public const IN_MEMORY = 'in-memory';
 }

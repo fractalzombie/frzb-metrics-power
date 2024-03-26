@@ -15,8 +15,6 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Factory\Exception;
 
-use FRZB\Component\MetricsPower\Exception\MetricsPowerException;
-
 final class NotSupportedStorageAdapterException extends StorageAdapterFactoryException
 {
     private const MESSAGE_NOT_SUPPORTED_STORAGE = 'Storage type "%s" is not supported';

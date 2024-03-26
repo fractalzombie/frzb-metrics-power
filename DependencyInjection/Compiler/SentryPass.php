@@ -35,12 +35,10 @@ final class SentryPass implements CompilerPassInterface
 
         $container
             ->setDefinition(HubAdapter::class, $hubDefinition)
-            ->setPublic($isPublic)
-        ;
+            ->setPublic($isPublic);
 
         $container
-            ->setAlias(HubInterface::class, HubAdapter::class)
-        ;
+            ->setAlias(HubInterface::class, HubAdapter::class);
     }
 
     public static function configureHub(array $config): Definition
@@ -50,14 +48,12 @@ final class SentryPass implements CompilerPassInterface
         $clientBuilder = (new Definition(ClientBuilder::class, [$clientOptions]))->setPublic($isPublic);
         $client = (new Definition(ClientInterface::class))
             ->setPublic($isPublic)
-            ->setFactory([$clientBuilder, 'getClient'])
-        ;
+            ->setFactory([$clientBuilder, 'getClient']);
 
         return (new Definition(HubInterface::class))
             ->setFactory([HubAdapter::class, 'getInstance'])
             ->addMethodCall('bindClient', [$client])
-            ->setPublic($isPublic)
-        ;
+            ->setPublic($isPublic);
     }
 
     private static function getConfiguration(ContainerBuilder $container): array

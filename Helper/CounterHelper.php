@@ -16,11 +16,11 @@ declare(strict_types=1);
 namespace FRZB\Component\MetricsPower\Helper;
 
 use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
-use FRZB\Component\MetricsPower\Traits\WithEmptyPrivateConstructor;
+use FRZB\Component\MetricsPower\Traits\WithPrivateEmptyConstructor;
 
 final class CounterHelper
 {
-    use WithEmptyPrivateConstructor;
+    use WithPrivateEmptyConstructor;
 
     private const REPLACE_FROM = ['-', '.'];
     private const REPLACE_TO = ['_', '_'];
