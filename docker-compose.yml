@@ -2,7 +2,16 @@ version: '3.8'
 
 services:
   php:
-    build: .docker/php
+    build:
+      dockerfile: $PWD/.docker/php/cli/Dockerfile
+      context: $PWD/.docker/php/cli
+      args:
+        VERSION_PHP: 8.2
+        USER_ID: 1000
+        GROUP_ID: 1000
+        USER_NAME: fractal
+        GROUP_NAME: fractal
+    command: sleep infinity
     env_file:
       - '.env'
     volumes:

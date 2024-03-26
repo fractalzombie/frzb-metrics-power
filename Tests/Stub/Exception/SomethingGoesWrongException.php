@@ -13,13 +13,17 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Factory;
+namespace FRZB\Component\MetricsPower\Tests\Stub\Exception;
 
-use FRZB\Component\MetricsPower\Factory\Exception\StorageAdapterFactoryException;
-use Prometheus\Storage\Adapter;
+use FRZB\Component\MetricsPower\Exception\MetricsPowerException;
 
-interface PrometheusStorageAdapterFactoryInterface
+/** @internal */
+final class SomethingGoesWrongException extends MetricsPowerException
 {
-    /** @throws StorageAdapterFactoryException */
-    public static function createStorageAdapter(array $configuration): Adapter;
+    private const MESSAGE_SOMETHING_GOES_WRONG = 'Something goes wrong';
+
+    public static function wrong(?\Throwable $previous = null): self
+    {
+        return new self(self::MESSAGE_SOMETHING_GOES_WRONG, previous: $previous);
+    }
 }

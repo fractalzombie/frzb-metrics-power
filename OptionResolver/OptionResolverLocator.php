@@ -18,7 +18,6 @@ namespace FRZB\Component\MetricsPower\OptionResolver;
 use Fp\Collections\HashMap;
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
-use FRZB\Component\MetricsPower\OptionResolver\Resolver\DefaultOptionResolver;
 use FRZB\Component\MetricsPower\OptionResolver\Resolver\OptionResolverInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
@@ -38,6 +37,6 @@ class OptionResolverLocator implements OptionResolverLocatorInterface
     public function get(OptionsInterface $option): OptionResolverInterface
     {
         return $this->resolvers->get($option::class)->get()
-            ?? $this->resolvers->get(DefaultOptionResolver::class)->getUnsafe();
+            ?? $this->resolvers->get(OptionsInterface::class)->getUnsafe();
     }
 }

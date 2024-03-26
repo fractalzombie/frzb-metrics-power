@@ -25,6 +25,7 @@ use Symfony\Component\Messenger\Stamp\DispatchAfterCurrentBusStamp;
 final class EnvelopeHelper
 {
     use WithEmptyPrivateConstructor;
+
     public static function wrap(object $message): Envelope
     {
         $envelope = Envelope::wrap($message);

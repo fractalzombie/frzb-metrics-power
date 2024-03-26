@@ -13,13 +13,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Factory;
+namespace FRZB\Component\MetricsPower\Tests\Stub;
 
-use FRZB\Component\MetricsPower\Factory\Exception\StorageAdapterFactoryException;
-use Prometheus\Storage\Adapter;
-
-interface PrometheusStorageAdapterFactoryInterface
+interface TestConstants
 {
-    /** @throws StorageAdapterFactoryException */
-    public static function createStorageAdapter(array $configuration): Adapter;
+    public const DEFAULT_ID = 'ID-1234';
+    public const DEFAULT_RECEIVER_NAME = 'test-receiver';
+    public const DEFAULT_NAMESPACE = 'test-namespace';
 }

@@ -38,6 +38,14 @@ final class MetricalHelper
         return AttributeHelper::getAttributes($target, Metrical::class);
     }
 
+    public static function getFirstMetrical(object|string $target): ?Metrical
+    {
+        return ArrayList::collect(self::getMetrical($target))
+            ->firstElement()
+            ->get()
+        ;
+    }
+
     /** @return array<Option> */
     public static function getOptions(object|string $target): array
     {

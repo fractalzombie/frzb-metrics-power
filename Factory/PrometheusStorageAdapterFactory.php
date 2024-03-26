@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-/*
- * UnBlocker service for routers.
+/**
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  *
- * (c) Mykhailo Shtanko <fractalzombie@gmail.com>
+ * Copyright (c) 2024 Mykhailo Shtanko fractalzombie@gmail.com
  *
- * For the full copyright and license information, please view the LICENSE
+ * For the full copyright and license information, please view the LICENSE.MD
  * file that was distributed with this source code.
  */
 
@@ -40,7 +42,7 @@ final class PrometheusStorageAdapterFactory implements PrometheusStorageAdapterF
     /** @throws NotSupportedStorageAdapterException */
     private static function getStorageType(array $configuration): StorageType
     {
-        $storage = $configuration['storage'] ?? null;
+        $storage = $configuration['storage'] ?? StorageType::InMemory->value;
 
         return StorageType::tryFrom($storage) ?? throw NotSupportedStorageAdapterException::fromStorageType($storage);
     }

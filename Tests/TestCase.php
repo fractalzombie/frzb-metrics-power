@@ -13,13 +13,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Factory;
+namespace FRZB\Component\MetricsPower\Tests;
 
-use FRZB\Component\MetricsPower\Factory\Exception\StorageAdapterFactoryException;
-use Prometheus\Storage\Adapter;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
-interface PrometheusStorageAdapterFactoryInterface
-{
-    /** @throws StorageAdapterFactoryException */
-    public static function createStorageAdapter(array $configuration): Adapter;
-}
+abstract class TestCase extends BaseTestCase {}

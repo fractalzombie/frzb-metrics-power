@@ -17,22 +17,15 @@ namespace FRZB\Component\MetricsPower\Tests\Unit\Resources;
 
 use FRZB\Component\DependencyInjection\DependencyInjectionBundle;
 use FRZB\Component\MetricsPower\MetricsPowerBundle;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 
-#[Group('transactional-messenger')]
-class BundlesTest extends TestCase
-{
-    public function testConfiguredBundles(): void
-    {
-        $bundles = require __DIR__.'/../../../Resources/bundles.php';
-        $expectedBundles = [
-            FrameworkBundle::class => ['all' => true],
-            DependencyInjectionBundle::class => ['all' => true],
-            MetricsPowerBundle::class => ['all' => true],
-        ];
+it('Has all dependencies in bundles.php', function (): void {
+    $bundles = require __DIR__.'/../../../Resources/bundles.php';
+    $expectedBundles = [
+        FrameworkBundle::class => ['all' => true],
+        DependencyInjectionBundle::class => ['all' => true],
+        MetricsPowerBundle::class => ['all' => true],
+    ];
 
-        self::assertSame($expectedBundles, $bundles);
-    }
-}
+    expect($expectedBundles)->toBe($bundles);
+});
