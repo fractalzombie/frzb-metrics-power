@@ -16,7 +16,4 @@ declare(strict_types=1);
 namespace FRZB\Component\MetricsPower\Attribute;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
-final class LoggerOptions implements OptionsInterface
-{
-    public function __construct() {}
-}
+final class LoggerOptions implements OptionsInterface {}

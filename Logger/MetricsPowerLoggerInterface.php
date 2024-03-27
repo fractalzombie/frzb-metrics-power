@@ -23,7 +23,7 @@ use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 #[AsAlias(MetricsPowerLogger::class)]
 interface MetricsPowerLoggerInterface
 {
-    public function logInfo(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $option): void;
+    public function logInfo(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options): void;
 
-    public function logError(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $option, \Throwable $e): void;
+    public function logError(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options, \Throwable $e): void;
 }

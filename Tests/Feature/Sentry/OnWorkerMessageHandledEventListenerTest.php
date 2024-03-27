@@ -15,15 +15,11 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Tests\Feature\Kernel\Sentry;
 
-use FRZB\Component\MetricsPower\EventListener\Sentry\OnWorkerMessageFailedEventListener;
 use FRZB\Component\MetricsPower\EventListener\Sentry\OnWorkerMessageHandledEventListener;
-use FRZB\Component\MetricsPower\Handler\MetricsHandlerInterface;
-use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException;
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
 use Sentry\ClientInterface;
 use Sentry\State\HubInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 
 uses(KernelTestCase::class);

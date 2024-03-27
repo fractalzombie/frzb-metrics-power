@@ -26,27 +26,27 @@ use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 class MetricsPowerLogger implements MetricsPowerLoggerInterface
 {
     private const MESSAGE_INFO = '[MetricsPower] [INFO] [OPTIONS_CLASS: {option_class}] Metrics registration success for [MESSAGE_CLASS: {message_class}]';
-    private const MESSAGE_ERROR = '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}], [REASON: {reason_message}], [OPTIONS_VALUES: {option_values}]';
+    private const MESSAGE_ERROR = '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]';
 
     public function __construct(
         private readonly LoggerInterface $metricsPowerLogger
     ) {}
 
-    public function logInfo(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $option): void
+    public function logInfo(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options): void
     {
         $context = [
-            'option_class' => ClassHelper::getShortName($option),
+            'option_class' => ClassHelper::getShortName($options),
             'message_class' => ClassHelper::getShortName($event->getEnvelope()->getMessage()),
         ];
 
         $this->metricsPowerLogger->info(self::MESSAGE_INFO, $context);
     }
 
-    public function logError(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $option, \Throwable $e): void
+    public function logError(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options, \Throwable $e): void
     {
         $context = [
-            'option_class' => ClassHelper::getShortName($option),
-            'option_values' => ClassHelper::getProperties($option),
+            'option_class' => ClassHelper::getShortName($options),
+            'option_values' => ClassHelper::getProperties($options),
             'message_class' => ClassHelper::getShortName($event->getEnvelope()->getMessage()),
             'reason_message' => $e->getMessage(),
             'reason_trace' => $e->getTrace(),

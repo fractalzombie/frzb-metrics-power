@@ -16,8 +16,9 @@ declare(strict_types=1);
 namespace FRZB\Component\MetricsPower\Helper;
 
 use Fp\Collections\ArrayList;
+use FRZB\Component\MetricsPower\Attribute\LoggerOptions;
 use FRZB\Component\MetricsPower\Attribute\Metrical;
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface as Option;
+use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
 use FRZB\Component\MetricsPower\Traits\WithPrivateEmptyConstructor;
 use JetBrains\PhpStorm\Immutable;
@@ -45,13 +46,20 @@ final class MetricalHelper
             ->get();
     }
 
-    /** @return array<Option> */
+    /** @return array<OptionsInterface> */
     public static function getOptions(object|string $target): array
     {
         return ArrayList::collect(self::getMetrical($target))
             ->map(static fn (Metrical $metrical) => $metrical->options)
             ->flatten()
             ->toList();
+    }
+
+    public static function getFirstOptions(object|string $target): ?OptionsInterface
+    {
+        return ArrayList::collect(self::getOptions($target))
+            ->firstElement()
+            ->getOrElse(fn () => new LoggerOptions());
     }
 
     public static function getCounterName(PrometheusOptions $options): string
