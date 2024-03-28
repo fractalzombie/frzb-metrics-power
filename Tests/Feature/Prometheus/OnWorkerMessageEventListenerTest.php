@@ -17,6 +17,7 @@ namespace FRZB\Component\MetricsPower\Tests\Feature\Kernel\Sentry;
 
 use FRZB\Component\MetricsPower\EventListener\Prometheus\OnWorkerMessageEventListener;
 use FRZB\Component\MetricsPower\Handler\MetricsHandlerInterface;
+use FRZB\Component\MetricsPower\Helper\ClassHelper;
 use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException;
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -44,23 +45,23 @@ test('It handles symfony messenger events', function (mixed $event): void {
 
     $this->getContainer()->get(OnWorkerMessageEventListener::class)($event);
 })->with(function () {
-    yield WorkerMessageHandledEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageHandledEvent::class) => [
         'event' => new WorkerMessageHandledEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
     ];
 
-    yield WorkerMessageReceivedEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageReceivedEvent::class) => [
         'event' => new WorkerMessageReceivedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
     ];
 
-    yield WorkerMessageRetriedEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageRetriedEvent::class) => [
         'event' => new WorkerMessageRetriedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
     ];
 
-    yield WorkerMessageFailedEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageFailedEvent::class) => [
         'event' => new WorkerMessageFailedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME, SomethingGoesWrongException::wrong()),
     ];
 
-    yield SendMessageToTransportsEvent::class => [
+    yield ClassHelper::getShortName(SendMessageToTransportsEvent::class) => [
         'event' => new SendMessageToTransportsEvent(createTestEnvelope(), [TestConstants::DEFAULT_RECEIVER_NAME]),
     ];
 });

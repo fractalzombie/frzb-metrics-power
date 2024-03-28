@@ -32,7 +32,7 @@ test('It can log error when message failed', function (): void {
     $options = new LoggerOptions();
 
     $logger
-        ->expects('logError')
+        ->expects('error')
         ->once();
 
     $loggerOptionsResolver($event, $options);
@@ -46,7 +46,7 @@ test('It can log error when message handled', function (): void {
     $options = new LoggerOptions();
 
     $logger
-        ->expects('logInfo')
+        ->expects('info')
         ->once();
 
     $loggerOptionsResolver($event, $options);

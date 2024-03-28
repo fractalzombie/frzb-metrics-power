@@ -13,13 +13,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Tests\Stub;
+namespace FRZB\Component\MetricsPower\Logger\Data;
 
-/** @internal */
-interface TestConstants
+use JetBrains\PhpStorm\Immutable;
+
+#[Immutable(Immutable::CONSTRUCTOR_WRITE_SCOPE)]
+final class Context
 {
-    public const DEFAULT_ID = 'ID-1234';
-    public const DEFAULT_NAME = 'NAME-1234';
-    public const DEFAULT_RECEIVER_NAME = 'test-receiver';
-    public const DEFAULT_NAMESPACE = 'test-namespace';
+    public function __construct(
+        public readonly string $message,
+        public readonly array $context,
+    ) {}
 }

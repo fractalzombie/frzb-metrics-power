@@ -34,8 +34,8 @@ class LoggerOptionsResolver
     public function __invoke(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options): void
     {
         match ($event::class) {
-            WorkerMessageFailedEvent::class => $this->logger->logError($event, $options, $event->getThrowable()),
-            default => $this->logger->logInfo($event, $options),
+            WorkerMessageFailedEvent::class => $this->logger->error($event, $options, $event->getThrowable()),
+            default => $this->logger->info($event, $options),
         };
     }
 

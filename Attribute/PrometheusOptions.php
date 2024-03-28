@@ -15,8 +15,6 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Attribute;
 
-use FRZB\Component\MetricsPower\Helper\MetricalHelper;
-
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final class PrometheusOptions implements OptionsInterface
 {
@@ -28,7 +26,11 @@ final class PrometheusOptions implements OptionsInterface
         public readonly string $help,
         public readonly array $labels,
         public readonly array $values,
-    ) {
-        $this->counterName = MetricalHelper::getCounterName($this);
+        public readonly bool $isSerializable = true,
+    ) {}
+
+    public function isSerializable(): bool
+    {
+        return $this->isSerializable;
     }
 }

@@ -15,4 +15,7 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Attribute;
 
-interface OptionsInterface {}
+interface OptionsInterface
+{
+    public function isSerializable(): bool;
+}

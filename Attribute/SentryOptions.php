@@ -21,5 +21,11 @@ final class SentryOptions implements OptionsInterface
     public function __construct(
         public readonly bool $waitRetry = true,
         public readonly bool $onHandleFlush = true,
+        public readonly bool $isSerializable = true,
     ) {}
+
+    public function isSerializable(): bool
+    {
+        return $this->isSerializable;
+    }
 }
