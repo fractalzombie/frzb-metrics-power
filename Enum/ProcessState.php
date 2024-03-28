@@ -13,8 +13,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-return [
-    \Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    \FRZB\Component\DependencyInjection\DependencyInjectionBundle::class => ['all' => true],
-    \FRZB\Component\MetricsPower\MetricsPowerBundle::class => ['all' => true],
-];
+namespace FRZB\Component\MetricsPower\Enum;
+
+enum ProcessState: string
+{
+    case Success = 'success';
+    case Failure = 'failure';
+}

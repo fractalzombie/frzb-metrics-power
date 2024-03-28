@@ -13,8 +13,17 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-return [
-    \Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    \FRZB\Component\DependencyInjection\DependencyInjectionBundle::class => ['all' => true],
-    \FRZB\Component\MetricsPower\MetricsPowerBundle::class => ['all' => true],
-];
+namespace FRZB\Component\MetricsPower\Messenger\Message;
+
+use FRZB\Component\MetricsPower\Enum\ProcessState;
+
+final class LogMessage
+{
+    public function __construct(
+        public readonly ProcessState $state,
+        public readonly string $channel,
+        public readonly string $message,
+        public readonly string $context,
+        public readonly ?\Throwable $exception = null,
+    ) {}
+}
