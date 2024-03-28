@@ -13,13 +13,17 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Tests\Stub;
+namespace FRZB\Component\MetricsPower\Logger;
 
-/** @internal */
-interface TestConstants
+use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
+use FRZB\Component\MetricsPower\Logger\ContextExtractor\ContextExtractorInterface;
+
+interface ContextExtractorLocatorInterface
 {
-    public const DEFAULT_ID = 'ID-1234';
-    public const DEFAULT_NAME = 'NAME-1234';
-    public const DEFAULT_RECEIVER_NAME = 'test-receiver';
-    public const DEFAULT_NAMESPACE = 'test-namespace';
+    /**
+     * @template TTarget
+     *
+     * @return ContextExtractorInterface<TTarget, OptionsInterface>
+     */
+    public function get(object|string $target): ContextExtractorInterface;
 }

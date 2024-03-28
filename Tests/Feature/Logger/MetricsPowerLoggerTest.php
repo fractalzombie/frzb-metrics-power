@@ -17,6 +17,9 @@ namespace FRZB\Component\MetricsPower\Tests\Feature\Logger;
 
 use FRZB\Component\MetricsPower\Helper\ClassHelper;
 use FRZB\Component\MetricsPower\Helper\MetricalHelper;
+use FRZB\Component\MetricsPower\Logger\ContextExtractor\ContextExtractorInterface;
+use FRZB\Component\MetricsPower\Logger\ContextExtractorLocatorInterface;
+use FRZB\Component\MetricsPower\Logger\Data\Context;
 use FRZB\Component\MetricsPower\Logger\MetricsPowerLogger;
 use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException;
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
@@ -33,48 +36,81 @@ beforeEach(function (): void {
 
 test('It can map info log', function (): void {
     $decoratedLogger = \Mockery::mock(LoggerInterface::class);
-    $metricsPowerLogger = new MetricsPowerLogger($decoratedLogger);
+    $contextExtractor = \Mockery::mock(ContextExtractorInterface::class);
+    $contextExtractorLocator = \Mockery::mock(ContextExtractorLocatorInterface::class);
+    $metricsPowerLogger = new MetricsPowerLogger($contextExtractorLocator, $decoratedLogger);
     $message = createTestMessage();
     $envelope = createTestEnvelope($message);
     $options = MetricalHelper::getFirstOptions($message);
     $event = new WorkerMessageHandledEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME);
+    $context = new Context(
+        '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]',
+        [
+            'option_class' => ClassHelper::getShortName($options),
+            'message_class' => ClassHelper::getShortName($message),
+        ]
+    );
+
+    $contextExtractor
+        ->expects('extract')
+        ->once()
+        ->andReturn($context);
+
+    $contextExtractorLocator
+        ->expects('get')
+        ->once()
+        ->andReturn($contextExtractor);
 
     $decoratedLogger->expects('info')
         ->once()
-        ->andReturnUsing(function (string $logMessage, array $logContext) use ($options, $message): void {
+        ->andReturnUsing(function (string $logMessage, array $logContext) use ($context): void {
             expect()
-                ->and($logMessage)->toBe('[MetricsPower] [INFO] [OPTIONS_CLASS: {option_class}] Metrics registration success for [MESSAGE_CLASS: {message_class}]')
-                ->and($logContext)->toBe([
-                    'option_class' => ClassHelper::getShortName($options),
-                    'message_class' => ClassHelper::getShortName($message),
-                ]);
+                ->and($logMessage)->toBe($context->message)
+                ->and($logContext)->toBe($context->context);
         });
 
-    $metricsPowerLogger->logInfo($event, $options);
+    $metricsPowerLogger->info($event, $options);
 });
 
 test('It can map error log', function (): void {
     $decoratedLogger = \Mockery::mock(LoggerInterface::class);
-    $metricsPowerLogger = new MetricsPowerLogger($decoratedLogger);
+    $contextExtractor = \Mockery::mock(ContextExtractorInterface::class);
+    $contextExtractorLocator = \Mockery::mock(ContextExtractorLocatorInterface::class);
+    $metricsPowerLogger = new MetricsPowerLogger($contextExtractorLocator, $decoratedLogger);
     $message = createTestMessage();
     $envelope = createTestEnvelope($message);
     $exception = SomethingGoesWrongException::wrong();
     $options = MetricalHelper::getFirstOptions($message);
     $event = new WorkerMessageHandledEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME);
+    $context = new Context(
+        '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]',
+        [
+            'option_class' => ClassHelper::getShortName($options),
+            'option_values' => ClassHelper::getProperties($options),
+            'message_class' => ClassHelper::getShortName($event->getEnvelope()->getMessage()),
+            'reason_message' => $exception->getMessage(),
+            'reason_trace' => $exception->getTrace(),
+        ]
+    );
 
-    $decoratedLogger->expects('error')
+    $contextExtractor
+        ->expects('extract')
         ->once()
-        ->andReturnUsing(function (string $logMessage, array $logContext) use ($options, $event, $exception): void {
+        ->andReturn($context);
+
+    $contextExtractorLocator
+        ->expects('get')
+        ->once()
+        ->andReturn($contextExtractor);
+
+    $decoratedLogger
+        ->expects('error')
+        ->once()
+        ->andReturnUsing(function (string $logMessage, array $logContext) use ($context): void {
             expect()
-                ->and($logMessage)->toBe('[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]')
-                ->and($logContext)->toBe([
-                    'option_class' => ClassHelper::getShortName($options),
-                    'option_values' => ClassHelper::getProperties($options),
-                    'message_class' => ClassHelper::getShortName($event->getEnvelope()->getMessage()),
-                    'reason_message' => $exception->getMessage(),
-                    'reason_trace' => $exception->getTrace(),
-                ]);
+                ->and($logMessage)->toBe($context->message)
+                ->and($logContext)->toBe($context->context);
         });
 
-    $metricsPowerLogger->logError($event, $options, $exception);
+    $metricsPowerLogger->error($event, $options, $exception);
 });
