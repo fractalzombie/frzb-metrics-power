@@ -17,41 +17,34 @@ namespace FRZB\Component\MetricsPower\Logger;
 
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
-use FRZB\Component\MetricsPower\Helper\ClassHelper;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
-use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 
 #[AsService]
-class MetricsPowerLogger implements MetricsPowerLoggerInterface
+readonly class MetricsPowerLogger implements MetricsPowerLoggerInterface
 {
-    private const MESSAGE_INFO = '[MetricsPower] [INFO] [OPTIONS_CLASS: {option_class}] Metrics registration success for [MESSAGE_CLASS: {message_class}]';
-    private const MESSAGE_ERROR = '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]';
+    private const MESSAGE_INFO = '[MetricsPower] [INFO] [OPTIONS_CLASS: {options_class}] Metrics registration success for [MESSAGE_CLASS: {message_class}]';
+    private const MESSAGE_ERROR = '[MetricsPower] [ERROR] [OPTIONS_CLASS: {options_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]';
 
     public function __construct(
-        private readonly LoggerInterface $metricsPowerLogger
+        private ContextExtractorLocatorInterface $contextExtractorLocator,
+        private LoggerInterface $logger,
     ) {}
 
-    public function logInfo(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options): void
+    public function info(object $target, OptionsInterface $options): void
     {
-        $context = [
-            'option_class' => ClassHelper::getShortName($options),
-            'message_class' => ClassHelper::getShortName($event->getEnvelope()->getMessage()),
-        ];
+        $context = $this->contextExtractorLocator
+            ->get($target::class)
+            ->extract($target, $options);
 
-        $this->metricsPowerLogger->info(self::MESSAGE_INFO, $context);
+        $this->logger->info($context->message, $context->context);
     }
 
-    public function logError(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options, \Throwable $e): void
+    public function error(object $target, OptionsInterface $options, \Throwable $exception): void
     {
-        $context = [
-            'option_class' => ClassHelper::getShortName($options),
-            'option_values' => ClassHelper::getProperties($options),
-            'message_class' => ClassHelper::getShortName($event->getEnvelope()->getMessage()),
-            'reason_message' => $e->getMessage(),
-            'reason_trace' => $e->getTrace(),
-        ];
+        $context = $this->contextExtractorLocator
+            ->get($target::class)
+            ->extract($target, $options, $exception);
 
-        $this->metricsPowerLogger->error(self::MESSAGE_ERROR, $context);
+        $this->logger->error($context->message, $context->context);
     }
 }

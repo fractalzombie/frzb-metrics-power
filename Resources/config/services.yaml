@@ -7,8 +7,8 @@ services: &services
     autoconfigure: true
   
   FRZB\Component\MetricsPower\:
-    resource: '../../{Action,EventListener,Handler,Factory,TypeExtractor,Logger,OptionsResolver}/**'
-    exclude: '../../{Attribute,Configuration,DependencyInjection,Enum,Exception,Helper,Tests,Traits}/**'
+    resource: '../../{Action,EventListener,Handler,Factory,TypeExtractor,Logger,OptionsResolver}'
+    exclude: '../../**/{Attribute,Configuration,Data,DependencyInjection,Enum,Exception,Helper,Tests,Traits}'
 
 when@test:
   services:

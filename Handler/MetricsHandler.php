@@ -35,9 +35,9 @@ class MetricsHandler implements MetricsHandlerInterface
         foreach (MetricalHelper::getOptions($event->getEnvelope()->getMessage()) as $option) {
             try {
                 $this->locator->get($option)($event, $option);
-                $this->logger->logInfo($event, $option);
+                $this->logger->info($event, $option);
             } catch (\Throwable $e) {
-                $this->logger->logError($event, $option, $e);
+                $this->logger->error($event, $option, $e);
             }
         }
     }

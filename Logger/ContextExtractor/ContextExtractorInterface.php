@@ -15,20 +15,23 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Logger;
+namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 
-use FRZB\Component\DependencyInjection\Attribute\AsAlias;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
+use FRZB\Component\MetricsPower\Logger\Data\Context;
 
 /**
- * @template TTarget of object
+ * @template TTarget of mixed
+ * @template TOptions of OptionsInterface
  */
-#[AsAlias(MetricsPowerLogger::class)]
-interface MetricsPowerLoggerInterface
+interface ContextExtractorInterface
 {
-    /** @param TTarget $target */
-    public function info(object $target, OptionsInterface $options): void;
+    /**
+     * @param TTarget $target
+     * @param TOptions $options
+     * @param ?\Throwable $exception
+     */
+    public function extract(mixed $target, ?OptionsInterface $options = null, ?\Throwable $exception = null): Context;
 
-    /** @param TTarget $target */
-    public function error(object $target, OptionsInterface $options, \Throwable $exception): void;
+    public static function getType(): string;
 }

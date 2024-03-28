@@ -13,13 +13,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Tests\Stub;
+namespace FRZB\Component\MetricsPower\Enum;
 
-/** @internal */
-interface TestConstants
+enum ProcessState: string
 {
-    public const DEFAULT_ID = 'ID-1234';
-    public const DEFAULT_NAME = 'NAME-1234';
-    public const DEFAULT_RECEIVER_NAME = 'test-receiver';
-    public const DEFAULT_NAMESPACE = 'test-namespace';
+    case Success = 'success';
+    case Failure = 'failure';
 }

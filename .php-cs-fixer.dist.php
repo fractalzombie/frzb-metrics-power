@@ -19,12 +19,10 @@ file that was distributed with this source code.
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude('var')
-    ->exclude('vendor')
-    ->exclude(['var', 'vendor', 'Documentation'])
+    ->exclude(['var', 'vendor', 'Documentation', 'Resources'])
     ->ignoreDotFiles(true)
     ->notName(['*Configuration*'])
-    ->in(__DIR__)
+    ->in($projectDirectory)
 ;
 
 $rules = [

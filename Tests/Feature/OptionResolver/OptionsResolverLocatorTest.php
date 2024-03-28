@@ -67,8 +67,8 @@ test('It returns correct OptionsResolver with unknown options', function (): voi
     $options = $metrical->options[0];
 
     $logger = \Mockery::mock(MetricsPowerLoggerInterface::class);
-    $logger->expects('logInfo')->once();
-    $logger->expects('logError')->once();
+    $logger->expects('info')->once();
+    $logger->expects('error')->once();
 
     $defaultOptionResolver = new DefaultOptionsResolver($logger);
     $this->getContainer()->set(PrometheusOptionsResolver::class, $defaultOptionResolver);

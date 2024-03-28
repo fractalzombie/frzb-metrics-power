@@ -17,6 +17,7 @@ namespace FRZB\Component\MetricsPower\Tests\Unit\OptionsResolver;
 
 use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
 use FRZB\Component\MetricsPower\Exception\MetricsRegistrationException;
+use FRZB\Component\MetricsPower\Helper\ClassHelper;
 use FRZB\Component\MetricsPower\OptionsResolver\Resolver\PrometheusOptionsResolver;
 use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException;
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
@@ -63,32 +64,32 @@ test('It can make needed counter name', function (string $counterName, AbstractW
 })->with(function () {
     $envelope = createTestEnvelope();
 
-    yield WorkerMessageHandledEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageHandledEvent::class) => [
         'counter_name' => 'test_receiver_test_name_handled',
         'event' => new WorkerMessageHandledEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME),
     ];
 
-    yield WorkerMessageReceivedEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageReceivedEvent::class) => [
         'counter_name' => 'test_receiver_test_name_received',
         'event' => new WorkerMessageReceivedEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME),
     ];
 
-    yield WorkerMessageRetriedEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageRetriedEvent::class) => [
         'counter_name' => 'test_receiver_test_name_retried',
         'event' => new WorkerMessageRetriedEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME),
     ];
 
-    yield WorkerMessageFailedEvent::class => [
+    yield ClassHelper::getShortName(WorkerMessageFailedEvent::class) => [
         'counter_name' => 'test_receiver_test_name_failed',
         'event' => new WorkerMessageFailedEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME, SomethingGoesWrongException::wrong()),
     ];
 
-    yield SendMessageToTransportsEvent::class => [
+    yield ClassHelper::getShortName(SendMessageToTransportsEvent::class) => [
         'counter_name' => 'test_receiver_test_name_sent',
         'event' => new SendMessageToTransportsEvent($envelope, [TestConstants::DEFAULT_RECEIVER_NAME]),
     ];
 
-    yield sprintf('%s with exception', WorkerMessageFailedEvent::class) => [
+    yield sprintf('%s with exception', ClassHelper::getShortName(WorkerMessageFailedEvent::class)) => [
         'counter_name' => 'test_receiver_test_name_failed',
         'event' => new WorkerMessageFailedEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME, SomethingGoesWrongException::wrong()),
         'throws' => true,

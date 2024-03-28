@@ -16,4 +16,14 @@ declare(strict_types=1);
 namespace FRZB\Component\MetricsPower\Attribute;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
-final class LoggerOptions implements OptionsInterface {}
+final class LoggerOptions implements OptionsInterface
+{
+    public function __construct(
+        public readonly bool $isSerializable = true,
+    ) {}
+
+    public function isSerializable(): bool
+    {
+        return $this->isSerializable;
+    }
+}
