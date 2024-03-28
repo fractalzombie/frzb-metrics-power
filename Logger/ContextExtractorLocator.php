@@ -22,10 +22,10 @@ use FRZB\Component\MetricsPower\Logger\ContextExtractor\DefaultContextExtractor;
 use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 #[AsService]
-final class ContextExtractorLocator implements ContextExtractorLocatorInterface
+final readonly class ContextExtractorLocator implements ContextExtractorLocatorInterface
 {
     /** @var HashMap<string, ContextExtractorInterface> */
-    private readonly HashMap $resolvers;
+    private HashMap $resolvers;
 
     public function __construct(
         #[TaggedIterator(ContextExtractorInterface::class, defaultIndexMethod: 'getType')]

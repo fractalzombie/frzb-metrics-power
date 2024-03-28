@@ -22,9 +22,9 @@ use FRZB\Component\MetricsPower\Messenger\Message\LogMessage;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-final class LogMessageHandler
+final readonly class LogMessageHandler
 {
-    public function __construct(private readonly MetricsPowerLoggerInterface $logger) {}
+    public function __construct(private MetricsPowerLoggerInterface $logger) {}
 
     public function __invoke(LogMessage $message): LogMessage
     {

@@ -13,7 +13,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Logger\Traits;
+namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Helper\ClassHelper;
@@ -21,7 +21,7 @@ use FRZB\Component\MetricsPower\Logger\Data\Context;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
-trait CanExtractContext
+abstract class AbstractWorkerMessageExtractor
 {
     public function __construct(
         private readonly SerializerInterface $serializer,
@@ -44,6 +44,8 @@ trait CanExtractContext
             ];
         }
 
-        return new Context(self::MESSAGE, $context);
+        return new Context($this->getMessage(), $context);
     }
+
+    abstract protected function getMessage(): string;
 }

@@ -18,21 +18,23 @@ namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\DependencyInjection\Attribute\AsTagged;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
-use FRZB\Component\MetricsPower\Logger\Traits\CanExtractContext;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 
 /**
  * @implements ContextExtractorInterface<WorkerMessageHandledEvent, OptionsInterface>
  */
 #[AsService, AsTagged(ContextExtractorInterface::class)]
-final class WorkerMessageHandledEventContextExtractor implements ContextExtractorInterface
+final class WorkerMessageHandledEventContextExtractor extends AbstractWorkerMessageExtractor implements ContextExtractorInterface
 {
-    use CanExtractContext;
-
     private const MESSAGE = '[MetricsPower] [INFO] [MESSAGE: Handle succeed] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]';
 
     public static function getType(): string
     {
         return WorkerMessageHandledEvent::class;
+    }
+
+    protected function getMessage(): string
+    {
+        return self::MESSAGE;
     }
 }

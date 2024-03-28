@@ -20,14 +20,14 @@ use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use Psr\Log\LoggerInterface;
 
 #[AsService]
-class MetricsPowerLogger implements MetricsPowerLoggerInterface
+readonly class MetricsPowerLogger implements MetricsPowerLoggerInterface
 {
     private const MESSAGE_INFO = '[MetricsPower] [INFO] [OPTIONS_CLASS: {options_class}] Metrics registration success for [MESSAGE_CLASS: {message_class}]';
     private const MESSAGE_ERROR = '[MetricsPower] [ERROR] [OPTIONS_CLASS: {options_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]';
 
     public function __construct(
-        private readonly ContextExtractorLocatorInterface $contextExtractorLocator,
-        private readonly LoggerInterface $logger,
+        private ContextExtractorLocatorInterface $contextExtractorLocator,
+        private LoggerInterface $logger,
     ) {}
 
     public function info(object $target, OptionsInterface $options): void

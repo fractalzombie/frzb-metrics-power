@@ -18,10 +18,10 @@ namespace FRZB\Component\MetricsPower\Logger\Data;
 use JetBrains\PhpStorm\Immutable;
 
 #[Immutable(Immutable::CONSTRUCTOR_WRITE_SCOPE)]
-final class Context
+final readonly class Context
 {
     public function __construct(
-        public readonly string $message,
-        public readonly array $context,
+        public string $message,
+        public array $context,
     ) {}
 }
