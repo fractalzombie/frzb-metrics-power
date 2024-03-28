@@ -20,10 +20,10 @@ use FRZB\Component\MetricsPower\Enum\ProcessState;
 final readonly class LogMessage
 {
     public function __construct(
-        public ProcessState $state,
-        public string $channel,
-        public string $message,
-        public string $context,
-        public ?\Throwable $exception = null,
+        public readonly ProcessState $state,
+        public readonly string $channel,
+        public readonly string $message,
+        public readonly string $context,
+        public readonly ?\Throwable $exception = null,
     ) {}
 }
