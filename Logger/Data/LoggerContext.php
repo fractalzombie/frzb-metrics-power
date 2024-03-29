@@ -13,17 +13,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Messenger\Message;
+namespace FRZB\Component\MetricsPower\Logger\Data;
 
-use FRZB\Component\MetricsPower\Enum\ProcessState;
+use JetBrains\PhpStorm\Immutable;
 
-final readonly class LogMessage
+#[Immutable(Immutable::CONSTRUCTOR_WRITE_SCOPE)]
+final readonly class LoggerContext
 {
     public function __construct(
-        public readonly ProcessState $state,
-        public readonly string $channel,
-        public readonly string $message,
-        public readonly string $context,
-        public readonly ?\Throwable $exception = null,
+        public string $message,
+        public array $context,
     ) {}
 }

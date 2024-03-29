@@ -27,8 +27,8 @@ use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 interface MetricsPowerLoggerInterface
 {
     /** @param TTarget $target */
-    public function info(object $target, OptionsInterface $options): void;
+    public function info(object $target): void;
 
     /** @param TTarget $target */
-    public function error(object $target, OptionsInterface $options, \Throwable $exception): void;
+    public function error(object $target, \Throwable $exception): void;
 }

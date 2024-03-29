@@ -29,6 +29,7 @@ test('It can log error when message failed', function (): void {
     $loggerOptionsResolver = new LoggerOptionsResolver($logger);
     $envelope = createTestEnvelope(new TestMessageWithAllOptions(TestConstants::DEFAULT_ID));
     $event = new WorkerMessageFailedEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME, SomethingGoesWrongException::wrong());
+    $exception = SomethingGoesWrongException::wrong();
     $options = new LoggerOptions();
 
     $logger
@@ -38,7 +39,7 @@ test('It can log error when message failed', function (): void {
     $loggerOptionsResolver($event, $options);
 });
 
-test('It can log error when message handled', function (): void {
+test('It can log info when message handled', function (): void {
     $logger = \Mockery::mock(MetricsPowerLoggerInterface::class);
     $loggerOptionsResolver = new LoggerOptionsResolver($logger);
     $envelope = createTestEnvelope(new TestMessageWithAllOptions(TestConstants::DEFAULT_ID));

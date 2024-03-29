@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpDocSignatureInspection */
-
 declare(strict_types=1);
 
 /**
@@ -17,21 +15,12 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
-use FRZB\Component\MetricsPower\Logger\Data\Context;
+use FRZB\Component\MetricsPower\Logger\Data\LoggerContext;
 
 /**
- * @template TTarget of mixed
- * @template TOptions of OptionsInterface
+ * @method LoggerContext extract(object $target)
  */
 interface ContextExtractorInterface
 {
-    /**
-     * @param TTarget $target
-     * @param TOptions $options
-     * @param ?\Throwable $exception
-     */
-    public function extract(mixed $target, ?OptionsInterface $options = null, ?\Throwable $exception = null): Context;
-
     public static function getType(): string;
 }

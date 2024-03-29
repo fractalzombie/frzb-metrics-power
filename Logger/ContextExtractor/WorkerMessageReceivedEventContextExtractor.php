@@ -24,17 +24,15 @@ use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
  * @implements ContextExtractorInterface<WorkerMessageReceivedEvent, OptionsInterface>
  */
 #[AsService, AsTagged(ContextExtractorInterface::class)]
-final class WorkerMessageReceivedEventContextExtractor extends AbstractWorkerMessageExtractor implements ContextExtractorInterface
+final readonly class WorkerMessageReceivedEventContextExtractor extends AbstractWorkerMessageExtractor
 {
-    private const MESSAGE = '[MetricsPower] [INFO] [MESSAGE: Handle received] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]';
-
     public static function getType(): string
     {
         return WorkerMessageReceivedEvent::class;
     }
 
-    protected function getMessage(): string
+    protected static function getMessage(): string
     {
-        return self::MESSAGE;
+        return '[MetricsPower] [INFO] [MESSAGE: Handle received] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]';
     }
 }
