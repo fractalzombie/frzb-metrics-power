@@ -22,25 +22,6 @@ use FRZB\Component\MetricsPower\Tests\Stub\Message\TestMessage;
 use FRZB\Component\MetricsPower\Tests\Stub\Message\TestMessageWithAllOptions;
 use FRZB\Component\MetricsPower\Tests\Stub\Message\TestMessageWithNoOptions;
 
-dataset('messages', [
-    sprintf('%s', ClassHelper::getShortName(TestMessage::class)) => [
-        'class_name' => TestMessage::class,
-        'has_attributes' => true,
-    ],
-    sprintf('%s', ClassHelper::getShortName(TestMessageWithAllOptions::class)) => [
-        'class_name' => TestMessageWithAllOptions::class,
-        'has_attributes' => true,
-    ],
-    sprintf('%s', ClassHelper::getShortName(TestMessageWithNoOptions::class)) => [
-        'class_name' => TestMessageWithNoOptions::class,
-        'has_attributes' => false,
-    ],
-    'InvalidClassName' => [
-        'class_name' => 'InvalidClassName',
-        'has_attributes' => false,
-    ],
-]);
-
 test('It can get attributes', function (string $className, bool $hasAttributes): void {
     $hasAttributes
         ? expect(AttributeHelper::getAttributes($className, Metrical::class))->not()->toBeEmpty()
@@ -62,3 +43,22 @@ test('It can get reflection attributes', function (string $className, bool $hasA
 test('It has attribute', function (string $className, bool $hasAttributes): void {
     expect(AttributeHelper::hasAttribute($className, Metrical::class))->toBe($hasAttributes);
 })->with('messages');
+
+dataset('messages', [
+    sprintf('%s', ClassHelper::getShortName(TestMessage::class)) => [
+        'class_name' => TestMessage::class,
+        'has_attributes' => true,
+    ],
+    sprintf('%s', ClassHelper::getShortName(TestMessageWithAllOptions::class)) => [
+        'class_name' => TestMessageWithAllOptions::class,
+        'has_attributes' => true,
+    ],
+    sprintf('%s', ClassHelper::getShortName(TestMessageWithNoOptions::class)) => [
+        'class_name' => TestMessageWithNoOptions::class,
+        'has_attributes' => false,
+    ],
+    'InvalidClassName' => [
+        'class_name' => 'InvalidClassName',
+        'has_attributes' => false,
+    ],
+]);
