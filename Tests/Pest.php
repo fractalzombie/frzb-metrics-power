@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpDocSignatureInspection */
+<?php
+
+/** @noinspection PhpDocSignatureInspection */
 
 declare(strict_types=1);
 
@@ -15,9 +17,6 @@ declare(strict_types=1);
 use FRZB\Component\MetricsPower\Helper\EnvelopeHelper;
 use FRZB\Component\MetricsPower\Tests\Stub\Message\TestMessage;
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
-use Mockery\LegacyMockInterface;
-use Mockery\MockInterface;
-use Sentry\State\HubInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Messenger\Envelope;
