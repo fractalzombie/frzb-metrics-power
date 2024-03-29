@@ -43,7 +43,7 @@ beforeEach(function (): void {
 test('It returns correct OptionsResolver when default options provided', function (): void {
     $message = createTestMessage();
     $envelope = EnvelopeHelper::wrap($message);
-    $metrical = MetricalHelper::getFirstMetrical($message);
+    $metrical = MetricalHelper::getMetrical($message);
     $event = new SendMessageToTransportsEvent($envelope, [TestConstants::DEFAULT_RECEIVER_NAME]);
     $options = $metrical->options[0];
 
@@ -61,7 +61,7 @@ test('It returns correct OptionsResolver when default options provided', functio
 test('It returns correct OptionsResolver with unknown options', function (): void {
     $message = createTestMessage();
     $envelope = EnvelopeHelper::wrap($message);
-    $metrical = MetricalHelper::getFirstMetrical($message);
+    $metrical = MetricalHelper::getMetrical($message);
     $sendEvent = new SendMessageToTransportsEvent($envelope, [TestConstants::DEFAULT_RECEIVER_NAME]);
     $failedEvent = new WorkerMessageFailedEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME, SomethingGoesWrongException::wrong());
     $options = $metrical->options[0];
@@ -85,7 +85,7 @@ test('It returns correct OptionsResolver with unknown options', function (): voi
 test('It throws MetricsRegistrationException when something goes wrong', function (): void {
     $message = createTestMessage();
     $envelope = EnvelopeHelper::wrap($message);
-    $metrical = MetricalHelper::getFirstMetrical($message);
+    $metrical = MetricalHelper::getMetrical($message);
     $event = new SendMessageToTransportsEvent($envelope, [TestConstants::DEFAULT_RECEIVER_NAME]);
     $options = $metrical->options[0];
 

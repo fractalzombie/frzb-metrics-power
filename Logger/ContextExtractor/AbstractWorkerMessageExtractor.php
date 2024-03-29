@@ -15,37 +15,38 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Helper\ClassHelper;
-use FRZB\Component\MetricsPower\Logger\Data\Context;
+use FRZB\Component\MetricsPower\Helper\MetricalHelper;
+use FRZB\Component\MetricsPower\Logger\Data\LoggerContext;
+use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractWorkerMessageExtractor
+abstract readonly class AbstractWorkerMessageExtractor implements ContextExtractorInterface
 {
     public function __construct(
-        private readonly SerializerInterface $serializer,
+        private SerializerInterface $serializer,
     ) {}
 
-    public function extract(mixed $target, ?OptionsInterface $options = null, ?\Throwable $exception = null): Context
+    public function extract(AbstractWorkerMessageEvent $target): LoggerContext
     {
+        $message = $target->getEnvelope()->getMessage();
         $context = [
             'target_class' => ClassHelper::getShortName($target),
-            'message_class' => ClassHelper::getShortName($target->getEnvelope()->getMessage()),
+            'target_values' => $this->serializer->serialize($target, JsonEncoder::FORMAT),
         ];
 
-        if ($options?->isSerializable()) {
-            $context += ['message_values' => $this->serializer->serialize($target->getEnvelope()->getMessage(), JsonEncoder::FORMAT)];
-        }
-
-        if ($options) {
+        if (($options = MetricalHelper::getFirstOptions($message)) && $options->isSerializable()) {
             $context += [
+                'message_class' => ClassHelper::getShortName($message),
+                'message_values' => $this->serializer->serialize($message, JsonEncoder::FORMAT),
                 'options_class' => ClassHelper::getShortName($options),
+                'options_values' => $this->serializer->serialize($options, JsonEncoder::FORMAT),
             ];
         }
 
-        return new Context($this->getMessage(), $context);
+        return new LoggerContext(static::getMessage(), $context);
     }
 
-    abstract protected function getMessage(): string;
+    abstract protected static function getMessage(): string;
 }

@@ -15,13 +15,14 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Tests\Feature\Logger;
 
-use FRZB\Component\MetricsPower\Attribute\LoggerOptions;
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Helper\ClassHelper;
+use FRZB\Component\MetricsPower\Logger\ContextExtractorLocator;
 use FRZB\Component\MetricsPower\Logger\ContextExtractorLocatorInterface;
+use FRZB\Component\MetricsPower\Logger\Exception\ContextExtractorLocatorException;
 use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException;
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -30,6 +31,7 @@ use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageReceivedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageRetriedEvent;
+use Symfony\Contracts\Service\ServiceProviderInterface;
 
 uses(KernelTestCase::class);
 
@@ -40,12 +42,12 @@ beforeEach(function (): void {
 
 test(
     'It can extract event with custom extractor',
-    function (object $target, OptionsInterface $options, string $extractorType, string $expectedMessage, array $expectedContext): void {
+    function (object $target, string $extractorType, string $expectedMessage, array $expectedContext): void {
         $extractor = $this->getContainer()
             ->get(ContextExtractorLocatorInterface::class)
             ->get($target);
 
-        $context = $extractor->extract($target, $options);
+        $context = $extractor->extract($target);
 
         expect()
             ->and($extractor::getType())->toBe($extractorType)
@@ -53,93 +55,100 @@ test(
             ->and($context->context)->toBe($expectedContext);
     }
 )->with(function () {
-    $kernel = \Mockery::mock(HttpKernelInterface::class);
-    $request = createRequest();
-
-    yield ClassHelper::getShortName(ExceptionEvent::class) => [
-        'event' => new ExceptionEvent(
-            $kernel,
-            $request,
-            HttpKernelInterface::MAIN_REQUEST,
-            SomethingGoesWrongException::wrong()
-        ),
-        'options' => new LoggerOptions(),
-        'extractor_type' => ExceptionEvent::class,
-        'expected_message' => '[MetricsPower] [ERROR] [MESSAGE: Operation failed] [TARGET_CLASS: {target_class}] [EXCEPTION_CLASS: {exception_class}] [EXCEPTION_MESSAGE: {exception_message}]',
-        'expected_context' => [
-            'target_class' => 'ExceptionEvent',
-        ],
-    ];
-
     yield ClassHelper::getShortName(SendMessageToTransportsEvent::class) => [
         'event' => new SendMessageToTransportsEvent(createTestEnvelope(), [TestConstants::DEFAULT_RECEIVER_NAME]),
-        'options' => new LoggerOptions(),
         'extractor_type' => SendMessageToTransportsEvent::class,
-        'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Sent to transports {transport_name}] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]',
+        'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Message sent] [TARGET_CLASS: {target_class}]',
         'expected_context' => [
             'target_class' => 'SendMessageToTransportsEvent',
+            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"senders":["test-receiver"]}',
             'message_class' => 'TestMessage',
-            'transport_name' => 'test-receiver',
-            'message_values' => '{"id":"ID-1234"}',
             'options_class' => 'LoggerOptions',
-        ],
-    ];
-
-    yield ClassHelper::getShortName(WorkerMessageFailedEvent::class) => [
-        'event' => new WorkerMessageFailedEvent(
-            createTestEnvelope(),
-            TestConstants::DEFAULT_RECEIVER_NAME,
-            SomethingGoesWrongException::wrong()
-        ),
-        'options' => new LoggerOptions(),
-        'extractor_type' => WorkerMessageFailedEvent::class,
-        'expected_message' => '[MetricsPower] [ERROR] [MESSAGE: Handle failed] [TARGET_CLASS: {target_class}] [OPTIONS_CLASS: {options_class}] [MESSAGE_CLASS: {message_class}] [EXCEPTION_CLASS: {exception_class}] [EXCEPTION_MESSAGE: {exception_message}] [OPTIONS_VALUES: {option_values}]',
-        'expected_context' => [
-            'target_class' => 'WorkerMessageFailedEvent',
-            'target_values' => '{"id":"ID-1234"}',
-            'options_class' => 'LoggerOptions',
-            'option_values' => ['isSerializable' => true],
+            'options_values' => '{"id":"ID-1234"}',
         ],
     ];
 
     yield ClassHelper::getShortName(WorkerMessageHandledEvent::class) => [
         'event' => new WorkerMessageHandledEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
-        'options' => new LoggerOptions(),
         'extractor_type' => WorkerMessageHandledEvent::class,
         'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Handle succeed] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]',
         'expected_context' => [
             'target_class' => 'WorkerMessageHandledEvent',
+            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"receiverName":"test-receiver"}',
             'message_class' => 'TestMessage',
             'message_values' => '{"id":"ID-1234"}',
-            'options_class' => 'LoggerOptions',
+            'options_class' => 'PrometheusOptions',
+            'options_values' => '{"serializable":true,"topic":"test-receiver","name":"prometheus-default-options","help":"Total of test value","labels":["name"],"values":["TestMessage"],"isSerializable":true}',
         ],
     ];
 
     yield ClassHelper::getShortName(WorkerMessageReceivedEvent::class) => [
         'event' => new WorkerMessageReceivedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
-        'options' => new LoggerOptions(),
         'extractor_type' => WorkerMessageReceivedEvent::class,
         'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Handle received] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]',
         'expected_context' => [
             'target_class' => 'WorkerMessageReceivedEvent',
+            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"receiverName":"test-receiver"}',
             'message_class' => 'TestMessage',
             'message_values' => '{"id":"ID-1234"}',
-            'options_class' => 'LoggerOptions',
+            'options_class' => 'PrometheusOptions',
+            'options_values' => '{"serializable":true,"topic":"test-receiver","name":"prometheus-default-options","help":"Total of test value","labels":["name"],"values":["TestMessage"],"isSerializable":true}',
         ],
     ];
 
     yield ClassHelper::getShortName(WorkerMessageRetriedEvent::class) => [
         'event' => new WorkerMessageRetriedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
-        'options' => new LoggerOptions(),
         'extractor_type' => WorkerMessageRetriedEvent::class,
         'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Handle retried] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]',
         'expected_context' => [
             'target_class' => 'WorkerMessageRetriedEvent',
+            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"receiverName":"test-receiver"}',
             'message_class' => 'TestMessage',
             'message_values' => '{"id":"ID-1234"}',
-            'options_class' => 'LoggerOptions',
+            'options_class' => 'PrometheusOptions',
+            'options_values' => '{"serializable":true,"topic":"test-receiver","name":"prometheus-default-options","help":"Total of test value","labels":["name"],"values":["TestMessage"],"isSerializable":true}',
         ],
     ];
+});
+
+test('It can extract ExceptionEvent event', function (): void {
+    $contextExtractorLocator = $this->getContainer()->get(ContextExtractorLocatorInterface::class);
+    $kernel = \Mockery::mock(HttpKernelInterface::class);
+    $request = createRequest();
+    $target = new ExceptionEvent($kernel, $request, HttpKernelInterface::MAIN_REQUEST, SomethingGoesWrongException::wrong());
+
+    $extractor = $contextExtractorLocator->get($target);
+    $context = $extractor->extract($target);
+
+    expect()
+        ->and($extractor::getType())->toBe(ExceptionEvent::class)
+        ->and($context->message)->toBe('[MetricsPower] [ERROR] [MESSAGE: Operation failed] [TARGET_CLASS: {target_class}] [EXCEPTION_CLASS: {exception_class}] [EXCEPTION_MESSAGE: {exception_message}]')
+        ->and($context->context)->toHaveKey('target_class')
+        ->and($context->context)->toHaveKey('target_values')
+        ->and($context->context)->toHaveKey('exception_class')
+        ->and($context->context)->toHaveKey('exception_message')
+        ->and($context->context)->toHaveKey('exception_trace')
+        ->and($context->context['target_class'])->toBe('ExceptionEvent')
+        ->and($context->context['target_values'])->toBeJson();
+});
+
+test('It can extract WorkerMessageFailedEvent event', function (): void {
+    $contextExtractorLocator = $this->getContainer()->get(ContextExtractorLocatorInterface::class);
+    $target = new WorkerMessageFailedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME, SomethingGoesWrongException::wrong());
+
+    $extractor = $contextExtractorLocator->get($target);
+    $context = $extractor->extract($target);
+
+    expect()
+        ->and($extractor::getType())->toBe(WorkerMessageFailedEvent::class)
+        ->and($context->message)->toBe('[MetricsPower] [ERROR] [MESSAGE: Operation failed] [TARGET_CLASS: {target_class}] [EXCEPTION_CLASS: {exception_class}] [EXCEPTION_MESSAGE: {exception_message}]')
+        ->and($context->context)->toHaveKey('target_class')
+        ->and($context->context)->toHaveKey('target_values')
+        ->and($context->context)->toHaveKey('exception_class')
+        ->and($context->context)->toHaveKey('exception_message')
+        ->and($context->context)->toHaveKey('exception_trace')
+        ->and($context->context['target_class'])->toBe('WorkerMessageFailedEvent')
+        ->and($context->context['target_values'])->toBeJson();
 });
 
 test('It can extract any event', function (): void {
@@ -149,13 +158,27 @@ test('It can extract any event', function (): void {
 
     $extractor = $contextExtractorLocator->get($target);
 
-    $context = $extractor->extract($target, new LoggerOptions());
+    $context = $extractor->extract($target);
 
     expect()
         ->and($extractor::getType())->toBe('Default')
-        ->and($context->message)->toBe('[MetricsPower] [INFO] [MESSAGE: Operation succeed] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}]')
+        ->and($context->message)->toBe('[MetricsPower] [INFO] [MESSAGE: Operation succeed] [TARGET_CLASS: {target_class}]')
         ->and($context->context)->toHaveKey('target_class')
         ->and($context->context)->toHaveKey('target_values')
         ->and($context->context['target_class'])->toBe('RequestEvent')
         ->and($context->context['target_values'])->toBeJson();
 });
+
+test('It throws ContextExtractorLocatorException when ContainerException caught', function (): void {
+    $serviceLocator = \Mockery::mock(ServiceProviderInterface::class);
+    $contextExtractorLocator = new ContextExtractorLocator($serviceLocator);
+    $request = createRequest();
+    $target = new RequestEvent(\Mockery::mock(HttpKernelInterface::class), $request, HttpKernelInterface::MAIN_REQUEST);
+
+    $serviceLocator
+        ->expects('get')
+        ->once()
+        ->andThrow(new LogicException('Something goes wrong'));
+
+    $contextExtractorLocator->get($target);
+})->throws(ContextExtractorLocatorException::class);

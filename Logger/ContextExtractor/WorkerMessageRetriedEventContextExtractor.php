@@ -17,24 +17,18 @@ namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\DependencyInjection\Attribute\AsTagged;
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageRetriedEvent;
 
-/**
- * @implements ContextExtractorInterface<WorkerMessageRetriedEvent, OptionsInterface>
- */
 #[AsService, AsTagged(ContextExtractorInterface::class)]
-final class WorkerMessageRetriedEventContextExtractor extends AbstractWorkerMessageExtractor implements ContextExtractorInterface
+final readonly class WorkerMessageRetriedEventContextExtractor extends AbstractWorkerMessageExtractor
 {
-    private const MESSAGE = '[MetricsPower] [INFO] [MESSAGE: Handle retried] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]';
-
     public static function getType(): string
     {
         return WorkerMessageRetriedEvent::class;
     }
 
-    protected function getMessage(): string
+    protected static function getMessage(): string
     {
-        return self::MESSAGE;
+        return '[MetricsPower] [INFO] [MESSAGE: Handle retried] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]';
     }
 }

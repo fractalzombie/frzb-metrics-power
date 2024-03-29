@@ -19,7 +19,7 @@ use FRZB\Component\MetricsPower\Helper\ClassHelper;
 use FRZB\Component\MetricsPower\Helper\MetricalHelper;
 use FRZB\Component\MetricsPower\Logger\ContextExtractor\ContextExtractorInterface;
 use FRZB\Component\MetricsPower\Logger\ContextExtractorLocatorInterface;
-use FRZB\Component\MetricsPower\Logger\Data\Context;
+use FRZB\Component\MetricsPower\Logger\Data\LoggerContext;
 use FRZB\Component\MetricsPower\Logger\MetricsPowerLogger;
 use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException;
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
@@ -43,7 +43,7 @@ test('It can map info log', function (): void {
     $envelope = createTestEnvelope($message);
     $options = MetricalHelper::getFirstOptions($message);
     $event = new WorkerMessageHandledEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME);
-    $context = new Context(
+    $context = new LoggerContext(
         '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]',
         [
             'option_class' => ClassHelper::getShortName($options),
@@ -82,7 +82,7 @@ test('It can map error log', function (): void {
     $exception = SomethingGoesWrongException::wrong();
     $options = MetricalHelper::getFirstOptions($message);
     $event = new WorkerMessageHandledEvent($envelope, TestConstants::DEFAULT_RECEIVER_NAME);
-    $context = new Context(
+    $context = new LoggerContext(
         '[MetricsPower] [ERROR] [OPTIONS_CLASS: {option_class}] Metrics registration failed for [MESSAGE_CLASS: {message_class}] [REASON: {reason_message}] [OPTIONS_VALUES: {option_values}]',
         [
             'option_class' => ClassHelper::getShortName($options),
