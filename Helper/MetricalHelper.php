@@ -34,24 +34,15 @@ final class MetricalHelper
         return AttributeHelper::hasAttribute($target, Metrical::class);
     }
 
-    public static function getMetrical(object|string $target): array
+    public static function getMetrical(object|string $target): ?Metrical
     {
-        return AttributeHelper::getAttributes($target, Metrical::class);
-    }
-
-    public static function getFirstMetrical(object|string $target): ?Metrical
-    {
-        return ArrayList::collect(self::getMetrical($target))
-            ->firstElement()
-            ->get();
+        return ArrayList::collect(AttributeHelper::getAttributes($target, Metrical::class))->firstElement()->get();
     }
 
     /** @return array<OptionsInterface> */
     public static function getOptions(object|string $target): array
     {
-        return ArrayList::collect(self::getMetrical($target))
-            ->map(static fn (Metrical $metrical) => $metrical->options)
-            ->flatten()
+        return ArrayList::collect(self::getMetrical($target)?->options ?? [])
             ->toList();
     }
 
@@ -59,7 +50,7 @@ final class MetricalHelper
     {
         return ArrayList::collect(self::getOptions($target))
             ->firstElement()
-            ->getOrElse(fn () => new LoggerOptions());
+            ->getOrElse(new LoggerOptions());
     }
 
     public static function getCounterName(PrometheusOptions $options): string

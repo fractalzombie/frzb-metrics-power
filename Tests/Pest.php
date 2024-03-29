@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpDocSignatureInspection */
 
 declare(strict_types=1);
 
@@ -22,7 +22,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Messenger\Envelope;
 
-// uses(KernelTestCase::class)->in('Feature');
+uses()
+    ->group('feature')
+    ->in('Feature');
+
+uses()
+    ->group('unit')
+    ->in('Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -48,11 +54,6 @@ use Symfony\Component\Messenger\Envelope;
 |
 */
 
-function getSentryHub(): HubInterface|LegacyMockInterface|MockInterface
-{
-    return Mockery::mock(HubInterface::class);
-}
-
 function createTestMessage(): TestMessage
 {
     return new TestMessage(TestConstants::DEFAULT_ID);
@@ -61,7 +62,7 @@ function createTestMessage(): TestMessage
 /**
  * @template TMessage
  *
- * @param null|TMessage $message
+ * @param ?TMessage $message
  *
  * @return Envelope<TMessage>
  */

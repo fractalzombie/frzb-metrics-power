@@ -17,44 +17,38 @@ namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\DependencyInjection\Attribute\AsTagged;
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Helper\ClassHelper;
-use FRZB\Component\MetricsPower\Logger\Data\Context;
+use FRZB\Component\MetricsPower\Helper\MetricalHelper;
+use FRZB\Component\MetricsPower\Logger\Data\LoggerContext;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
-/**
- * @implements ContextExtractorInterface<SendMessageToTransportsEvent, OptionsInterface>
- */
 #[AsService, AsTagged(ContextExtractorInterface::class)]
-class SendMessageToTransportsEventContextExtractor implements ContextExtractorInterface
+final readonly class SendMessageToTransportsEventContextExtractor implements ContextExtractorInterface
 {
-    private const MESSAGE = '[MetricsPower] [INFO] [MESSAGE: Sent to transports {transport_name}] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]';
+    private const MESSAGE = '[MetricsPower] [INFO] [MESSAGE: Message sent] [TARGET_CLASS: {target_class}]';
 
     public function __construct(
-        private readonly SerializerInterface $serializer,
+        private SerializerInterface $serializer,
     ) {}
 
-    public function extract(mixed $target, ?OptionsInterface $options = null, ?\Throwable $exception = null): Context
+    public function extract(SendMessageToTransportsEvent $target): LoggerContext
     {
         $context = [
             'target_class' => ClassHelper::getShortName($target),
+            'target_values' => $this->serializer->serialize($target, JsonEncoder::FORMAT),
             'message_class' => ClassHelper::getShortName($target->getEnvelope()->getMessage()),
-            'transport_name' => implode(',', $target->getSenders()),
         ];
 
-        if ($options?->isSerializable()) {
-            $context += ['message_values' => $this->serializer->serialize($target->getEnvelope()->getMessage(), JsonEncoder::FORMAT)];
-        }
-
-        if ($options) {
+        if (($options = MetricalHelper::getFirstOptions($target)) && $options->isSerializable()) {
             $context += [
                 'options_class' => ClassHelper::getShortName($options),
+                'options_values' => $this->serializer->serialize($target->getEnvelope()->getMessage(), JsonEncoder::FORMAT),
             ];
         }
 
-        return new Context(self::MESSAGE, $context);
+        return new LoggerContext(self::MESSAGE, $context);
     }
 
     public static function getType(): string

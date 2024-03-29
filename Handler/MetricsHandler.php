@@ -32,12 +32,12 @@ class MetricsHandler implements MetricsHandlerInterface
 
     public function handle(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event): void
     {
-        foreach (MetricalHelper::getOptions($event->getEnvelope()->getMessage()) as $option) {
+        foreach (MetricalHelper::getOptions($event->getEnvelope()->getMessage()) as $options) {
             try {
-                $this->locator->get($option)($event, $option);
-                $this->logger->info($event, $option);
+                $this->locator->get($options)($event, $options);
+                $this->logger->info($event);
             } catch (\Throwable $e) {
-                $this->logger->error($event, $option, $e);
+                $this->logger->error($event, $e);
             }
         }
     }

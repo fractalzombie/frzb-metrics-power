@@ -13,15 +13,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Logger\Data;
+namespace FRZB\Component\MetricsPower\Logger\Exception;
 
-use JetBrains\PhpStorm\Immutable;
+use FRZB\Component\MetricsPower\Exception\MetricsPowerException;
 
-#[Immutable(Immutable::CONSTRUCTOR_WRITE_SCOPE)]
-final readonly class Context
-{
-    public function __construct(
-        public string $message,
-        public array $context,
-    ) {}
-}
+final class ContextExtractorLocatorException extends MetricsPowerException {}

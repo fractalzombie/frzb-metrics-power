@@ -17,34 +17,32 @@ namespace FRZB\Component\MetricsPower\Logger\ContextExtractor;
 
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\DependencyInjection\Attribute\AsTagged;
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Helper\ClassHelper;
-use FRZB\Component\MetricsPower\Logger\Data\Context;
+use FRZB\Component\MetricsPower\Logger\Data\LoggerContext;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
 
-/**
- * @implements ContextExtractorInterface<ExceptionEvent, OptionsInterface>
- */
 #[AsService, AsTagged(ContextExtractorInterface::class)]
-class ExceptionEventContextExtractor implements ContextExtractorInterface
+final readonly class ExceptionEventContextExtractor implements ContextExtractorInterface
 {
     private const MESSAGE = '[MetricsPower] [ERROR] [MESSAGE: Operation failed] [TARGET_CLASS: {target_class}] [EXCEPTION_CLASS: {exception_class}] [EXCEPTION_MESSAGE: {exception_message}]';
 
-    public function extract(mixed $target, ?OptionsInterface $options = null, ?\Throwable $exception = null): Context
+    public function __construct(
+        private SerializerInterface $serializer,
+    ) {}
+
+    public function extract(ExceptionEvent $target): LoggerContext
     {
         $context = [
             'target_class' => ClassHelper::getShortName($target),
+            'target_values' => $this->serializer->serialize($target, JsonEncoder::FORMAT),
+            'exception_class' => ClassHelper::getShortName($target->getThrowable()),
+            'exception_message' => $target->getThrowable()->getMessage(),
+            'exception_trace' => $target->getThrowable()->getTrace(),
         ];
 
-        if ($exception) {
-            $context += [
-                'exception_class' => ClassHelper::getShortName($target->getThrowable()),
-                'exception_message' => $target->getThrowable()->getMessage(),
-                'exception_trace' => $target->getThrowable()->getTrace(),
-            ];
-        }
-
-        return new Context(self::MESSAGE, $context);
+        return new LoggerContext(self::MESSAGE, $context);
     }
 
     public static function getType(): string

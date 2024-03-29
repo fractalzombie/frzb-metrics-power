@@ -17,6 +17,7 @@ namespace FRZB\Component\MetricsPower\Logger;
 
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Logger\ContextExtractor\ContextExtractorInterface;
+use FRZB\Component\MetricsPower\Logger\Exception\ContextExtractorLocatorException;
 
 interface ContextExtractorLocatorInterface
 {
@@ -24,6 +25,8 @@ interface ContextExtractorLocatorInterface
      * @template TTarget
      *
      * @return ContextExtractorInterface<TTarget, OptionsInterface>
+     *
+     * @throws ContextExtractorLocatorException
      */
     public function get(object|string $target): ContextExtractorInterface;
 }

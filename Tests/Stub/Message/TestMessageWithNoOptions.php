@@ -13,17 +13,17 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Messenger\Message;
+namespace FRZB\Component\MetricsPower\Tests\Stub\Message;
 
-use FRZB\Component\MetricsPower\Enum\ProcessState;
-
-final readonly class LogMessage
+/** @internal */
+class TestMessageWithNoOptions
 {
     public function __construct(
-        public readonly ProcessState $state,
-        public readonly string $channel,
-        public readonly string $message,
-        public readonly string $context,
-        public readonly ?\Throwable $exception = null,
+        public readonly string $id,
     ) {}
+
+    public static function getShortName(): string
+    {
+        return (new \ReflectionClass(self::class))->getShortName();
+    }
 }

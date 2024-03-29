@@ -15,28 +15,31 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Logger;
 
-use Fp\Collections\HashMap;
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\MetricsPower\Logger\ContextExtractor\ContextExtractorInterface;
 use FRZB\Component\MetricsPower\Logger\ContextExtractor\DefaultContextExtractor;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use FRZB\Component\MetricsPower\Logger\Exception\ContextExtractorLocatorException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
+use Symfony\Contracts\Service\ServiceProviderInterface;
 
 #[AsService]
 final readonly class ContextExtractorLocator implements ContextExtractorLocatorInterface
 {
-    /** @var HashMap<string, ContextExtractorInterface> */
-    private HashMap $resolvers;
-
     public function __construct(
-        #[TaggedIterator(ContextExtractorInterface::class, defaultIndexMethod: 'getType')]
-        iterable $resolvers,
-    ) {
-        $this->resolvers = HashMap::collect($resolvers);
-    }
+        #[TaggedLocator(ContextExtractorInterface::class, defaultIndexMethod: 'getType')]
+        private ServiceProviderInterface $serviceProvider,
+    ) {}
 
     public function get(object|string $target): ContextExtractorInterface
     {
-        return $this->resolvers->get(\is_object($target) ? $target::class : $target)->get()
-            ?? $this->resolvers->get(DefaultContextExtractor::DEFAULT_TYPE)->getUnsafe();
+        try {
+            return $this->serviceProvider->get(\is_object($target) ? $target::class : $target);
+        } catch (NotFoundExceptionInterface) {
+            return $this->serviceProvider->get(DefaultContextExtractor::getType());
+        } catch (ContainerExceptionInterface $e) {
+            throw ContextExtractorLocatorException::fromThrowable($e);
+        }
     }
 }

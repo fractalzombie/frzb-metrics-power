@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpDocSignatureInspection */
-
 declare(strict_types=1);
 
 /**
@@ -15,19 +13,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Logger;
+namespace FRZB\Component\MetricsPower\Logger\Data;
 
-use FRZB\Component\DependencyInjection\Attribute\AsAlias;
+use JetBrains\PhpStorm\Immutable;
 
-/**
- * @template TTarget of object
- */
-#[AsAlias(MetricsPowerLogger::class)]
-interface MetricsPowerLoggerInterface
+#[Immutable(Immutable::CONSTRUCTOR_WRITE_SCOPE)]
+final readonly class LoggerContext
 {
-    /** @param TTarget $target */
-    public function info(object $target): void;
-
-    /** @param TTarget $target */
-    public function error(object $target, \Throwable $exception): void;
+    public function __construct(
+        public string $message,
+        public array $context,
+    ) {}
 }
