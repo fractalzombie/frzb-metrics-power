@@ -31,7 +31,7 @@ class LoggerOptionsResolver
         private readonly MetricsPowerLoggerInterface $logger,
     ) {}
 
-    public function __invoke(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options): void
+    public function resolve(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options): void
     {
         match ($event::class) {
             WorkerMessageFailedEvent::class => $this->logger->error($event, $event->getThrowable()),

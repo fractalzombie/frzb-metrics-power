@@ -53,9 +53,12 @@ test('It returns correct OptionsResolver when default options provided', functio
     $registry->expects('getOrRegisterCounter')->once()->andReturn($counter);
 
     $prometheusOptionResolver = new PrometheusOptionsResolver(TestConstants::DEFAULT_NAMESPACE, $registry);
-    $this->getContainer()->set(PrometheusOptionsResolver::class, $prometheusOptionResolver);
+    $this->getContainer()
+        ->set(PrometheusOptionsResolver::class, $prometheusOptionResolver);
 
-    $this->getContainer()->get(OptionsResolverLocatorInterface::class)->get($options)($event, $options);
+    $this->getContainer()->get(OptionsResolverLocatorInterface::class)
+        ->get($options)
+        ->resolve($event, $options);
 });
 
 test('It returns correct OptionsResolver with unknown options', function (): void {
@@ -71,11 +74,16 @@ test('It returns correct OptionsResolver with unknown options', function (): voi
     $logger->expects('error')->once();
 
     $defaultOptionResolver = new DefaultOptionsResolver($logger);
-    $this->getContainer()->set(PrometheusOptionsResolver::class, $defaultOptionResolver);
 
-    $this->getContainer()->get(OptionsResolverLocatorInterface::class)->get($options)($sendEvent, $options);
+    $this->getContainer()
+        ->set(PrometheusOptionsResolver::class, $defaultOptionResolver);
+
+    $this->getContainer()->get(OptionsResolverLocatorInterface::class)
+        ->get($options)
+        ->resolve($sendEvent, $options);
+
     $defaultOptionResolver = $this->getContainer()->get(OptionsResolverLocatorInterface::class)->get($options);
-    $defaultOptionResolver($failedEvent, $options);
+    $defaultOptionResolver->resolve($failedEvent, $options);
 
     expect()
         ->and($defaultOptionResolver)->toBeInstanceOf(DefaultOptionsResolver::class)
@@ -94,8 +102,13 @@ test('It throws MetricsRegistrationException when something goes wrong', functio
         ->once()
         ->andThrow(new BaseMetricsRegistrationException('something goes wrong'));
 
-    $this->getContainer()->set(PrometheusOptionsResolver::class, new PrometheusOptionsResolver(TestConstants::DEFAULT_NAMESPACE, $registry));
-    $prometheusOptionResolver = $this->getContainer()->get(OptionsResolverLocatorInterface::class)->get($options)($event, $options);
+    $this->getContainer()
+        ->set(PrometheusOptionsResolver::class, new PrometheusOptionsResolver(TestConstants::DEFAULT_NAMESPACE, $registry));
+    $prometheusOptionResolver = $this->getContainer()
+        ->get(OptionsResolverLocatorInterface::class)
+        ->get($options);
+
+    $prometheusOptionResolver->resolve($event, $options);
 
     expect()
         ->and($prometheusOptionResolver)->toBeInstanceOf(PrometheusOptionsResolver::class)

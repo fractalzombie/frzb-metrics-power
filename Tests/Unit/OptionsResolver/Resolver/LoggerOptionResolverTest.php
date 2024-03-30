@@ -36,7 +36,7 @@ test('It can log error when message failed', function (): void {
         ->expects('error')
         ->once();
 
-    $loggerOptionsResolver($event, $options);
+    $loggerOptionsResolver->resolve($event, $options);
 });
 
 test('It can log info when message handled', function (): void {
@@ -50,7 +50,7 @@ test('It can log info when message handled', function (): void {
         ->expects('info')
         ->once();
 
-    $loggerOptionsResolver($event, $options);
+    $loggerOptionsResolver->resolve($event, $options);
 });
 
 test('It has correct type', function (): void {

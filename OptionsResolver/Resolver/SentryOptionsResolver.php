@@ -31,7 +31,7 @@ class SentryOptionsResolver implements OptionsResolverInterface
         private readonly HubInterface $hub
     ) {}
 
-    public function __invoke(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, SentryOptions $options): void
+    public function resolve(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, SentryOptions $options): void
     {
         match ($event::class) {
             WorkerMessageFailedEvent::class => $this->onWorkerMessageFailedEvent($event, $options),

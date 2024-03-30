@@ -35,7 +35,7 @@ test('It can capture exception when not set for retry', function (): void {
         ->expects('captureException')
         ->once();
 
-    $sentryOptionsResolver($event, $options);
+    $sentryOptionsResolver->resolve($event, $options);
 });
 
 test('It can capture exception when set for retry', function (): void {
@@ -51,7 +51,7 @@ test('It can capture exception when set for retry', function (): void {
         ->expects('captureException')
         ->never();
 
-    $sentryOptionsResolver($event, $options);
+    $sentryOptionsResolver->resolve($event, $options);
 });
 
 test('It can flush when handled', function (): void {
@@ -70,7 +70,7 @@ test('It can flush when handled', function (): void {
         ->once()
         ->andReturn($hubClient);
 
-    $sentryOptionsResolver($event, $options);
+    $sentryOptionsResolver->resolve($event, $options);
 });
 
 test('It has correct type', function (): void {

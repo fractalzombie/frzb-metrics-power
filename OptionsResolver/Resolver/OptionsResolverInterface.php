@@ -20,7 +20,7 @@ use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 
 /**
- * @method void __invoke(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options)
+ * @method void resolve(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options)
  */
 interface OptionsResolverInterface
 {

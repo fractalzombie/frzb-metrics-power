@@ -20,16 +20,16 @@ use FRZB\Component\MetricsPower\Logger\ContextExtractor\ContextExtractorInterfac
 use FRZB\Component\MetricsPower\Logger\ContextExtractor\DefaultContextExtractor;
 use FRZB\Component\MetricsPower\Logger\Exception\ContextExtractorLocatorException;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
-use Symfony\Contracts\Service\ServiceProviderInterface;
 
 #[AsService]
 final readonly class ContextExtractorLocator implements ContextExtractorLocatorInterface
 {
     public function __construct(
         #[TaggedLocator(ContextExtractorInterface::class, defaultIndexMethod: 'getType')]
-        private ServiceProviderInterface $serviceProvider,
+        private ContainerInterface $serviceProvider,
     ) {}
 
     public function get(object|string $target): ContextExtractorInterface

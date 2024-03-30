@@ -40,7 +40,7 @@ class PrometheusOptionsResolver implements OptionsResolverInterface
     ) {}
 
     /** @throws MetricsRegistrationException */
-    public function __invoke(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, PrometheusOptions $options): void
+    public function resolve(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, PrometheusOptions $options): void
     {
         $postfix = match ($event::class) {
             WorkerMessageFailedEvent::class => 'failed',
