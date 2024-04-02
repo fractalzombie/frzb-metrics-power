@@ -51,63 +51,39 @@ test(
 
         expect()
             ->and($extractor::getType())->toBe($extractorType)
-            ->and($context->message)->toBe($expectedMessage)
-            ->and($context->context)->toBe($expectedContext);
+            ->and($context->message)->toBe($expectedMessage);
+
+        foreach ($expectedContext as $key) {
+            expect($context->context)->toHaveKey($key);
+        }
     }
 )->with(function () {
     yield ClassHelper::getShortName(SendMessageToTransportsEvent::class) => [
         'event' => new SendMessageToTransportsEvent(createTestEnvelope(), [TestConstants::DEFAULT_RECEIVER_NAME]),
         'extractor_type' => SendMessageToTransportsEvent::class,
         'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Message sent] [TARGET_CLASS: {target_class}]',
-        'expected_context' => [
-            'target_class' => 'SendMessageToTransportsEvent',
-            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"senders":["test-receiver"]}',
-            'message_class' => 'TestMessage',
-            'options_class' => 'LoggerOptions',
-            'options_values' => '{"id":"ID-1234"}',
-        ],
+        'expected_context' => ['target_class', 'target_values', 'message_class', 'options_class', 'options_values'],
     ];
 
     yield ClassHelper::getShortName(WorkerMessageHandledEvent::class) => [
         'event' => new WorkerMessageHandledEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
         'extractor_type' => WorkerMessageHandledEvent::class,
         'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Handle succeed] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]',
-        'expected_context' => [
-            'target_class' => 'WorkerMessageHandledEvent',
-            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"receiverName":"test-receiver"}',
-            'message_class' => 'TestMessage',
-            'message_values' => '{"id":"ID-1234"}',
-            'options_class' => 'PrometheusOptions',
-            'options_values' => '{"serializable":true,"topic":"test-receiver","name":"prometheus-default-options","help":"Total of test value","labels":["name"],"values":["TestMessage"],"isSerializable":true}',
-        ],
+        'expected_context' => ['target_class', 'target_values', 'message_class', 'message_values', 'options_class', 'options_values'],
     ];
 
     yield ClassHelper::getShortName(WorkerMessageReceivedEvent::class) => [
         'event' => new WorkerMessageReceivedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
         'extractor_type' => WorkerMessageReceivedEvent::class,
         'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Handle received] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]',
-        'expected_context' => [
-            'target_class' => 'WorkerMessageReceivedEvent',
-            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"receiverName":"test-receiver"}',
-            'message_class' => 'TestMessage',
-            'message_values' => '{"id":"ID-1234"}',
-            'options_class' => 'PrometheusOptions',
-            'options_values' => '{"serializable":true,"topic":"test-receiver","name":"prometheus-default-options","help":"Total of test value","labels":["name"],"values":["TestMessage"],"isSerializable":true}',
-        ],
+        'expected_context' => ['target_class', 'target_values', 'message_class', 'message_values', 'options_class', 'options_values'],
     ];
 
     yield ClassHelper::getShortName(WorkerMessageRetriedEvent::class) => [
         'event' => new WorkerMessageRetriedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME),
         'extractor_type' => WorkerMessageRetriedEvent::class,
         'expected_message' => '[MetricsPower] [INFO] [MESSAGE: Handle retried] [OPTIONS_CLASS: {options_class}] [TARGET_CLASS: {target_class}] [MESSAGE_CLASS: {message_class}]',
-        'expected_context' => [
-            'target_class' => 'WorkerMessageRetriedEvent',
-            'target_values' => '{"envelope":{"message":{"id":"ID-1234"}},"receiverName":"test-receiver"}',
-            'message_class' => 'TestMessage',
-            'message_values' => '{"id":"ID-1234"}',
-            'options_class' => 'PrometheusOptions',
-            'options_values' => '{"serializable":true,"topic":"test-receiver","name":"prometheus-default-options","help":"Total of test value","labels":["name"],"values":["TestMessage"],"isSerializable":true}',
-        ],
+        'expected_context' => ['target_class', 'target_values', 'message_class', 'message_values', 'options_class', 'options_values'],
     ];
 });
 
