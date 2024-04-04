@@ -17,7 +17,6 @@ namespace FRZB\Component\MetricsPower\Handler;
 
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\MetricsPower\Helper\MetricalHelper;
-use FRZB\Component\MetricsPower\Logger\MetricsPowerLoggerInterface;
 use FRZB\Component\MetricsPower\OptionsResolver\OptionsResolverLocatorInterface;
 use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
@@ -27,18 +26,12 @@ class MetricsHandler implements MetricsHandlerInterface
 {
     public function __construct(
         private readonly OptionsResolverLocatorInterface $locator,
-        private readonly MetricsPowerLoggerInterface $logger,
     ) {}
 
     public function handle(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event): void
     {
         foreach (MetricalHelper::getOptions($event->getEnvelope()->getMessage()) as $options) {
-            try {
-                $this->locator->get($options)->resolve($event, $options);
-                $this->logger->info($event);
-            } catch (\Throwable $e) {
-                $this->logger->error($event, $e);
-            }
+            $this->locator->get($options)->resolve($event, $options);
         }
     }
 }

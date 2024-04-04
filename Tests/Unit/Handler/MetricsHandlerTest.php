@@ -30,7 +30,7 @@ test('it can handle and log event with message', function (): void {
     $logger = \Mockery::mock(MetricsPowerLoggerInterface::class);
     $resolver = \Mockery::mock(OptionsResolverInterface::class);
     $event = new SendMessageToTransportsEvent(createTestEnvelope(), [TestConstants::DEFAULT_RECEIVER_NAME]);
-    $handler = new MetricsHandler($locator, $logger);
+    $handler = new MetricsHandler($locator);
 
     $locator
         ->expects('get')
@@ -46,10 +46,6 @@ test('it can handle and log event with message', function (): void {
                 ->and($event)->toBeInstanceOf(SendMessageToTransportsEvent::class);
         });
 
-    $logger
-        ->expects('info')
-        ->once();
-
     $handler->handle($event);
 });
 
@@ -58,7 +54,7 @@ test('it can handle and log when caught', function (): void {
     $logger = \Mockery::mock(MetricsPowerLoggerInterface::class);
     $resolver = \Mockery::mock(OptionsResolverInterface::class);
     $event = new SendMessageToTransportsEvent(createTestEnvelope(), [TestConstants::DEFAULT_RECEIVER_NAME]);
-    $handler = new MetricsHandler($locator, $logger);
+    $handler = new MetricsHandler($locator);
 
     $locator
         ->expects('get')
@@ -70,9 +66,5 @@ test('it can handle and log when caught', function (): void {
         ->once()
         ->andThrow(SomethingGoesWrongException::wrong());
 
-    $logger
-        ->expects('error')
-        ->once();
-
     $handler->handle($event);
-});
+})->throws(SomethingGoesWrongException::class);

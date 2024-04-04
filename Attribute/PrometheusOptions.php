@@ -15,8 +15,6 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\Attribute;
 
-use Symfony\Component\Serializer\Attribute\Ignore;
-
 #[\Attribute(\Attribute::TARGET_CLASS)]
 final readonly class PrometheusOptions implements OptionsInterface
 {

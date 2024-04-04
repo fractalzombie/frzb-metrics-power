@@ -13,22 +13,22 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\EventListener\Kernel;
+namespace FRZB\Component\MetricsPower\EventListener\Console;
 
 use FRZB\Component\MetricsPower\Enum\ListenerPriority;
 use Sentry\State\HubInterface;
+use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
-#[AsEventListener(ExceptionEvent::class, priority: ListenerPriority::HIGHEST)]
-class KernelExceptionEventListener
+#[AsEventListener(ConsoleErrorEvent::class, priority: ListenerPriority::HIGHEST)]
+class ConsoleErrorEventListener
 {
     public function __construct(
         private readonly HubInterface $hub,
     ) {}
 
-    public function __invoke(ExceptionEvent $event): void
+    public function __invoke(ConsoleErrorEvent $event): void
     {
-        $this->hub->captureException($event->getThrowable());
+        $this->hub->captureException($event->getError());
     }
 }

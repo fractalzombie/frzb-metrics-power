@@ -18,20 +18,19 @@ namespace FRZB\Component\MetricsPower\OptionsResolver\Resolver;
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\DependencyInjection\Attribute\AsTagged;
 use FRZB\Component\MetricsPower\Attribute\LoggerOptions;
-use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Logger\MetricsPowerLoggerInterface;
 use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 
 #[AsService, AsTagged(OptionsResolverInterface::class)]
-class LoggerOptionsResolver
+class LoggerOptionsResolver implements OptionsResolverInterface
 {
     public function __construct(
         private readonly MetricsPowerLoggerInterface $logger,
     ) {}
 
-    public function resolve(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event, OptionsInterface $options): void
+    public function resolve(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event): void
     {
         match ($event::class) {
             WorkerMessageFailedEvent::class => $this->logger->error($event, $event->getThrowable()),
