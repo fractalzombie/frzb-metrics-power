@@ -40,7 +40,7 @@ final class MetricsAction
             return new Response(
                 (new RenderTextFormat())->render($this->registry->getMetricFamilySamples()),
                 StatusCode::OK,
-                [Header::CONTENT_TYPE => RenderTextFormat::MIME_TYPE]
+                [Header::CONTENT_TYPE => RenderTextFormat::MIME_TYPE],
             );
         } catch (\Throwable $e) {
             throw MetricsRenderException::fromThrowable($e);

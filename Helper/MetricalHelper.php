@@ -55,6 +55,8 @@ final class MetricalHelper
 
     public static function getCounterName(PrometheusOptions $options): string
     {
-        return str_replace('-', '_', "{$options->topic}-{$options->name}");
+        return StringHelper::toSnakeCase(
+            str_replace('-', '_', "{$options->topic}_{$options->name}")
+        );
     }
 }

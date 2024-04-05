@@ -25,6 +25,8 @@ bin/phpunit
 ###> project ###
 Makefile
 .idea
+.fleet
+.code
 .DS_Store
 **/.env
 composer.lock
