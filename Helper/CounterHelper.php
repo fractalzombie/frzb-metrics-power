@@ -27,11 +27,14 @@ final class CounterHelper
 
     public static function makeName(PrometheusOptions $options, ?string $prefix = null, ?string $postfix = null): string
     {
+        $topic = StringHelper::toSnakeCase($options->topic);
+        $name = StringHelper::toSnakeCase($options->name);
+
         return match (true) {
-            null !== $prefix && null !== $postfix => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s_%s_%s', $prefix, $options->topic, $options->name, $postfix)),
-            null !== $prefix => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s_%s', $prefix, $options->topic, $options->name)),
-            null !== $postfix => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s_%s', $options->topic, $options->name, $postfix)),
-            default => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s', $options->topic, $options->name)),
+            null !== $prefix && null !== $postfix => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s_%s_%s', $prefix, $topic, $name, $postfix)),
+            null !== $prefix => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s_%s', $prefix, $topic, $name)),
+            null !== $postfix => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s_%s', $topic, $name, $postfix)),
+            default => str_replace(self::REPLACE_FROM, self::REPLACE_TO, sprintf('%s_%s', $topic, $name)),
         };
     }
 }

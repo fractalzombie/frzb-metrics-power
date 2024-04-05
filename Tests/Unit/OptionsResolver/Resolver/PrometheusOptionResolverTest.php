@@ -23,6 +23,7 @@ use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException
 use FRZB\Component\MetricsPower\Tests\Stub\TestConstants;
 use Prometheus\Counter;
 use Prometheus\Exception\MetricsRegistrationException as BaseMetricsRegistrationException;
+use Prometheus\Exception\StorageException;
 use Prometheus\RegistryInterface;
 use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
@@ -101,3 +102,18 @@ test('It can throw when registry fails', function (): void {
 
     $this->expectExceptionMessage('something goes wrong');
 })->throws(MetricsRegistrationException::class);
+
+test('It can not throw when storage fails', function (): void {
+    $registry = \Mockery::mock(RegistryInterface::class);
+    $prometheusOptionResolver = new PrometheusOptionsResolver(TestConstants::DEFAULT_NAMESPACE, $registry);
+
+    $event = new WorkerMessageFailedEvent(createTestEnvelope(), TestConstants::DEFAULT_RECEIVER_NAME, SomethingGoesWrongException::wrong());
+    $options = new PrometheusOptions(TestConstants::DEFAULT_RECEIVER_NAME, 'test-name', 'test-help', ['type'], ['TestMessage']);
+
+    $registry->expects('getOrRegisterCounter')
+        ->once()
+        ->andThrow(new StorageException('something goes wrong'));
+
+    /** @noinspection PhpUnhandledExceptionInspection */
+    $prometheusOptionResolver->resolve($event, $options);
+});

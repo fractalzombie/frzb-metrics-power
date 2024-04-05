@@ -20,10 +20,9 @@ use FRZB\Component\DependencyInjection\Attribute\AsTagged;
 use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
 use FRZB\Component\MetricsPower\Exception\MetricsRegistrationException;
 use FRZB\Component\MetricsPower\Helper\CounterHelper;
-use FRZB\Component\MetricsPower\Logger\MetricsPowerLoggerInterface;
 use Prometheus\Exception\MetricsRegistrationException as BaseMetricsRegistrationException;
+use Prometheus\Exception\StorageException;
 use Prometheus\RegistryInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Event\AbstractWorkerMessageEvent;
 use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
@@ -39,7 +38,6 @@ class PrometheusOptionsResolver implements OptionsResolverInterface
         #[Autowire(env: 'PROMETHEUS_NAMESPACE')]
         private readonly string $namespace,
         private readonly RegistryInterface $registry,
-        private readonly ?MetricsPowerLoggerInterface $logger = null,
     ) {}
 
     /** @throws MetricsRegistrationException */
@@ -59,9 +57,7 @@ class PrometheusOptionsResolver implements OptionsResolverInterface
                 ->inc($options->values);
         } catch (BaseMetricsRegistrationException $e) {
             throw MetricsRegistrationException::fromThrowable($e);
-        } catch (\Throwable $e) {
-            $this->logger?->error($event, $e);
-        }
+        } catch (StorageException $e) {}
     }
 
     public static function getType(): string

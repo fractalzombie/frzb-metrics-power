@@ -26,7 +26,8 @@ class MetricsHandler implements MetricsHandlerInterface
 {
     public function __construct(
         private readonly OptionsResolverLocatorInterface $locator,
-    ) {}
+    ) {
+    }
 
     public function handle(AbstractWorkerMessageEvent|SendMessageToTransportsEvent $event): void
     {
