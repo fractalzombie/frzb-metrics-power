@@ -13,13 +13,8 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace FRZB\Component\MetricsPower\Handler;
+namespace FRZB\Component\MetricsPower\OptionsResolver\Exception;
 
-use FRZB\Component\DependencyInjection\Attribute\AsAlias;
+use FRZB\Component\MetricsPower\Exception\MetricsPowerException;
 
-#[AsAlias(MetricsHandler::class)]
-interface MetricsHandlerInterface
-{
-    /** @throws \Throwable */
-    public function handle(object $event): void;
-}
+final class OptionsResolverLocatorException extends MetricsPowerException {}

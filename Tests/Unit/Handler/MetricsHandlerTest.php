@@ -18,7 +18,6 @@ namespace FRZB\Component\MetricsPower\Tests\Unit\Handler;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
 use FRZB\Component\MetricsPower\Attribute\PrometheusOptions;
 use FRZB\Component\MetricsPower\Handler\MetricsHandler;
-use FRZB\Component\MetricsPower\Logger\MetricsPowerLoggerInterface;
 use FRZB\Component\MetricsPower\OptionsResolver\OptionsResolverLocatorInterface;
 use FRZB\Component\MetricsPower\OptionsResolver\Resolver\OptionsResolverInterface;
 use FRZB\Component\MetricsPower\Tests\Stub\Exception\SomethingGoesWrongException;
@@ -27,7 +26,6 @@ use Symfony\Component\Messenger\Event\SendMessageToTransportsEvent;
 
 test('it can handle and log event with message', function (): void {
     $locator = \Mockery::mock(OptionsResolverLocatorInterface::class);
-    $logger = \Mockery::mock(MetricsPowerLoggerInterface::class);
     $resolver = \Mockery::mock(OptionsResolverInterface::class);
     $event = new SendMessageToTransportsEvent(createTestEnvelope(), [TestConstants::DEFAULT_RECEIVER_NAME]);
     $handler = new MetricsHandler($locator);
@@ -51,7 +49,6 @@ test('it can handle and log event with message', function (): void {
 
 test('it can handle and log when caught', function (): void {
     $locator = \Mockery::mock(OptionsResolverLocatorInterface::class);
-    $logger = \Mockery::mock(MetricsPowerLoggerInterface::class);
     $resolver = \Mockery::mock(OptionsResolverInterface::class);
     $event = new SendMessageToTransportsEvent(createTestEnvelope(), [TestConstants::DEFAULT_RECEIVER_NAME]);
     $handler = new MetricsHandler($locator);

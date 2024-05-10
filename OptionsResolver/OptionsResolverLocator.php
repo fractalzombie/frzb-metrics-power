@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpIncompatibleReturnTypeInspection */
+
 declare(strict_types=1);
 
 /**
@@ -15,28 +17,31 @@ declare(strict_types=1);
 
 namespace FRZB\Component\MetricsPower\OptionsResolver;
 
-use Fp\Collections\HashMap;
 use FRZB\Component\DependencyInjection\Attribute\AsService;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
+use FRZB\Component\MetricsPower\OptionsResolver\Exception\OptionsResolverLocatorException;
 use FRZB\Component\MetricsPower\OptionsResolver\Resolver\OptionsResolverInterface;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\DependencyInjection\Attribute\TaggedLocator;
 
 #[AsService]
 class OptionsResolverLocator implements OptionsResolverLocatorInterface
 {
-    /** @var HashMap<string, OptionsResolverInterface> */
-    private readonly HashMap $resolvers;
-
     public function __construct(
-        #[TaggedIterator(OptionsResolverInterface::class, defaultIndexMethod: 'getType')]
-        iterable $resolvers,
-    ) {
-        $this->resolvers = HashMap::collect($resolvers);
-    }
+        #[TaggedLocator(OptionsResolverInterface::class, defaultIndexMethod: 'getType')]
+        private readonly ContainerInterface $resolvers,
+    ) {}
 
-    public function get(OptionsInterface $option): OptionsResolverInterface
+    public function get(OptionsInterface $option): ?OptionsResolverInterface
     {
-        return $this->resolvers->get($option::class)->get()
-            ?? $this->resolvers->get(OptionsInterface::class)->getUnsafe();
+        try {
+            return $this->resolvers->get($option::class);
+        } catch (NotFoundExceptionInterface) {
+            return null;
+        } catch (ContainerExceptionInterface $e) {
+            throw OptionsResolverLocatorException::fromThrowable($e);
+        }
     }
 }

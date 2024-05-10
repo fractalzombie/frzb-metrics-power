@@ -17,10 +17,12 @@ namespace FRZB\Component\MetricsPower\OptionsResolver;
 
 use FRZB\Component\DependencyInjection\Attribute\AsAlias;
 use FRZB\Component\MetricsPower\Attribute\OptionsInterface;
+use FRZB\Component\MetricsPower\OptionsResolver\Exception\OptionsResolverLocatorException;
 use FRZB\Component\MetricsPower\OptionsResolver\Resolver\OptionsResolverInterface;
 
 #[AsAlias(OptionsResolverLocator::class)]
 interface OptionsResolverLocatorInterface
 {
-    public function get(OptionsInterface $option): OptionsResolverInterface;
+    /** @throws OptionsResolverLocatorException */
+    public function get(OptionsInterface $option): ?OptionsResolverInterface;
 }

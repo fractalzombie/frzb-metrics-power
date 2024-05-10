@@ -53,11 +53,17 @@ class PrometheusOptionsResolver implements OptionsResolverInterface
 
         try {
             $this->registry
-                ->getOrRegisterCounter($this->namespace, CounterHelper::makeName($options, postfix: $postfix), $options->help, $options->labels)
+                ->getOrRegisterCounter(
+                    $this->namespace,
+                    CounterHelper::makeName($options, postfix: $postfix),
+                    $options->help,
+                    $options->labels
+                )
                 ->inc($options->values);
         } catch (BaseMetricsRegistrationException $e) {
             throw MetricsRegistrationException::fromThrowable($e);
-        } catch (StorageException $e) {}
+        } catch (StorageException $e) {
+        }
     }
 
     public static function getType(): string

@@ -114,6 +114,6 @@ test('It can not throw when storage fails', function (): void {
         ->once()
         ->andThrow(new StorageException('something goes wrong'));
 
-    /** @noinspection PhpUnhandledExceptionInspection */
+    // @noinspection PhpUnhandledExceptionInspection
     $prometheusOptionResolver->resolve($event, $options);
 });
